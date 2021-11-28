@@ -76,10 +76,10 @@
 		status = "okay";
 		reg = <0x50>;
 	};	
-	imx258: imx258@10 {
+	imx258: imx258@1a {
 		compatible = "sony,imx258";
 		status = "okay";
-		reg = <0x10>;
+		reg = <0x1a>;
 		clocks = <&cru SCLK_CIF_OUT>;
 		clock-names = "xvclk";
 		//conflict with csi-ctl-gpios
@@ -125,10 +125,10 @@
 		status = "okay";
 		reg = <0x50>;
 	};	
-	imx258_1: imx258_1@10 {
+	imx258_1: imx258_1@1a {
 		compatible = "sony,imx258";
 		status = "okay";
-		reg = <0x10>;
+		reg = <0x1a>;
 		clocks = <&cru SCLK_CIF_OUT>;
 		clock-names = "xvclk";
 		//conflict with csi-ctl-gpios
