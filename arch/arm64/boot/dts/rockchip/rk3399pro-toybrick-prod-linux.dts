@@ -53,7 +53,7 @@
 &extbrd {
 	status = "okay";
 	io-channels = <&saradc 0>, <&saradc 1>;
-	ext-leds = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>,    /* GPIO0_A5 */
+	ext-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>,    /* GPIO0_A5 */
 		   <&gpio1 RK_PB1 GPIO_ACTIVE_HIGH>,    /* GPIO1_B1 */
 		   <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>,    /* GPIO1_B2 */
 		   <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;    /* GPIO0_A6 */
