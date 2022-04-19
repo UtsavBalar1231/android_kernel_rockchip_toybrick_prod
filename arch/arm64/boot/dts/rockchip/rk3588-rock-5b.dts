@@ -6,11 +6,11 @@
 
 /dts-v1/;
 
-#include "rk3588-evb1-lp4.dtsi"
+#include "rk3588-rock-5b-v11.dtsi"
 #include "rk3588-evb1-imx415.dtsi"
 #include "rk3588-android.dtsi"
 
 / {
-	model = "Rockchip RK3588 EVB1 LP4 V10 Board";
-	compatible = "rockchip,rk3588-evb1-lp4-v10", "rockchip,rk3588";
+	model = "Radxa ROCK 5B";
+	compatible = "radxa,rock-5b", "rockchip,rk3588-evb1-lp4-v10", "rockchip,rk3588";
 };
