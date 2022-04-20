@@ -704,6 +704,20 @@
 	status = "okay";
 };
 
+// SDCARD
+&sdmmc {
+	max-frequency = <150000000>;
+	no-sdio;
+	no-mmc;
+	bus-width = <4>;
+	cap-mmc-highspeed;
+	cap-sd-highspeed;
+	disable-wp;
+	sd-uhs-sdr104;
+	vqmmc-supply = <&vcc_3v3_sd_s0>;
+	status = "okay";
+};
+
 &u2phy0_otg {
 	rockchip,typec-vbus-det;
 };
