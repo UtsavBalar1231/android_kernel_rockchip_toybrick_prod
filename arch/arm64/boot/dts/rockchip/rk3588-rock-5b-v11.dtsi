@@ -102,6 +102,30 @@
 		vin-supply = <&avcc_1v8_s0>;
 	};
 
+	pcie2x1l0_3v3: pcie2x1l0-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "pcie2x1l0_3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+		regulator-always-on;
+		startup-delay-us = <5000>;
+		vin-supply = <&vcc_3v3_s0>;
+	};
+
+	pcie2x1l2_3v3: pcie2x1l2-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_pcie2x1l2";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+		regulator-always-on;
+		enable-active-high;
+		gpios = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
+		startup-delay-us = <5000>;
+		vin-supply = <&vcc12v_dcin>;
+	};
+
 	pcie30_avdd0v75: pcie30-avdd0v75 {
 		compatible = "regulator-fixed";
 		regulator-name = "pcie30_avdd0v75";
@@ -158,7 +182,7 @@
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		enable-active-high;
-		gpios = <&gpio3 RK_PC3 GPIO_ACTIVE_HIGH>;
+		gpios = <&gpio2 RK_PC4 GPIO_ACTIVE_HIGH>;
 		startup-delay-us = <5000>;
 		vin-supply = <&vcc12v_dcin>;
 	};
@@ -197,11 +221,10 @@
 
 	vcc_mipidcphy0: vcc-mipidcphy0-regulator {
 		compatible = "regulator-fixed";
-		gpio = <&gpio2 RK_PC4 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&mipidcphy0_pwr>;
 		regulator-name = "vcc_mipidcphy0";
-		enable-active-high;
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		vin-supply = <&vcc5v0_sys>;
 	};
 
 	wireless_bluetooth: wireless-bluetooth {
@@ -525,15 +548,18 @@
 };
 
 &pcie2x1l0 {
-	reset-gpios = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
-	rockchip,skip-scan-in-resume;
+	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
+	vpcie3v3-supply = <&pcie2x1l0_3v3>;
 	status = "okay";
 };
 
 &pcie2x1l1 {
+	status = "disabled";
+};
+
+&pcie2x1l2 {
 	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&rtl8111_isolate>;
+	vpcie3v3-supply = <&pcie2x1l2_3v3>;
 	status = "okay";
 };
 
@@ -560,11 +586,6 @@
 				/* camera power en */
 				<1 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
-		mipidcphy0_pwr: mipidcphy0-pwr {
-			rockchip,pins =
-				/* camera power en */
-				<2 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
 	};
 
 	dp {
@@ -588,12 +609,6 @@
 	lcd {
 		lcd_rst_gpio: lcd-rst-gpio {
 			rockchip,pins = <2 RK_PB4 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
-
-	rtl8111 {
-		rtl8111_isolate: rtl8111-isolate {
-			rockchip,pins = <1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 
