@@ -161,7 +161,7 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio4 RK_PD0 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
 		vin-supply = <&vcc5v0_usb>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&typec5v_pwren>;
@@ -195,7 +195,7 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
+		gpio = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
 		vin-supply = <&vcc5v0_usb>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&vcc5v0_host_en>;
@@ -410,7 +410,7 @@
 
 &i2c2 {
 	status = "okay";
-
+/*
 	usbc0: fusb302@22 {
 		compatible = "fcs,fusb302";
 		reg = <0x22>;
@@ -476,7 +476,7 @@
 			};
 		};
 	};
-
+*/
 	hym8563: hym8563@51 {
 		compatible = "haoyu,hym8563";
 		reg = <0x51>;
@@ -622,7 +622,7 @@
 
 	usb {
 		vcc5v0_host_en: vcc5v0-host-en {
-			rockchip,pins = <4 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <4 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -632,7 +632,7 @@
 		};
 
 		typec5v_pwren: typec5v-pwren {
-			rockchip,pins = <4 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -718,15 +718,17 @@
 	port {
 		#address-cells = <1>;
 		#size-cells = <0>;
+		/*
 		usbdp_phy0_orientation_switch: endpoint@0 {
 			reg = <0>;
-			remote-endpoint = <&usbc0_orien_sw>;
+			// remote-endpoint = <&usbc0_orien_sw>;
 		};
 
 		usbdp_phy0_dp_altmode_mux: endpoint@1 {
 			reg = <1>;
-			remote-endpoint = <&dp_altmode_mux>;
+			// remote-endpoint = <&dp_altmode_mux>;
 		};
+		*/
 	};
 };
 
@@ -740,10 +742,12 @@
 	port {
 		#address-cells = <1>;
 		#size-cells = <0>;
+		/*
 		dwc3_0_role_switch: endpoint@0 {
 			reg = <0>;
-			remote-endpoint = <&usbc0_role_sw>;
+			// remote-endpoint = <&usbc0_role_sw>;
 		};
+		*/
 	};
 };
 
