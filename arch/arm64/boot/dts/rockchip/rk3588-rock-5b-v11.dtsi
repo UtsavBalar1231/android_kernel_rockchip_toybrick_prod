@@ -113,20 +113,9 @@
 		vin-supply = <&avcc_1v8_s0>;
 	};
 
-	pcie2x1l0_3v3: pcie2x1l0-3v3 {
+	pcie2x1l1_3v3: pcie2x1l1-3v3 {
 		compatible = "regulator-fixed";
-		regulator-name = "pcie2x1l0_3v3";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		regulator-boot-on;
-		regulator-always-on;
-		startup-delay-us = <5000>;
-		vin-supply = <&vcc_3v3_s0>;
-	};
-
-	pcie2x1l2_3v3: pcie2x1l2-3v3 {
-		compatible = "regulator-fixed";
-		regulator-name = "vcc3v3_pcie2x1l2";
+		regulator-name = "pcie2x1l1_3v3";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		regulator-boot-on;
@@ -135,6 +124,17 @@
 		gpios = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
 		startup-delay-us = <5000>;
 		vin-supply = <&vcc12v_dcin>;
+	};
+
+	pcie2x1l2_3v3: pcie2x1l2-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "pcie2x1l2_3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-boot-on;
+		regulator-always-on;
+		startup-delay-us = <5000>;
+		vin-supply = <&vcc_3v3_s0>;
 	};
 
 	pcie30_avdd0v75: pcie30-avdd0v75 {
@@ -577,17 +577,19 @@
 };
 
 &pcie2x1l0 {
-	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-	vpcie3v3-supply = <&pcie2x1l0_3v3>;
-	status = "okay";
-};
-
-&pcie2x1l1 {
 	status = "disabled";
 };
 
-&pcie2x1l2 {
+// PCIE M.2 NGFF E-KEY SOCKET
+&pcie2x1l1 {
 	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+	vpcie3v3-supply = <&pcie2x1l1_3v3>;
+	status = "okay";
+};
+
+// R8125
+&pcie2x1l2 {
+	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&pcie2x1l2_3v3>;
 	status = "okay";
 };
