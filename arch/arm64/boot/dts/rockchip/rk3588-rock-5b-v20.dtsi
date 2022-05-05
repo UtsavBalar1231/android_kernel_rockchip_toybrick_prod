@@ -7,7 +7,7 @@
 #include "dt-bindings/usb/pd.h"
 #include "rk3588.dtsi"
 #include "rk3588-evb.dtsi"
-#include "rk3588-rk806-dual.dtsi"
+#include "rk3588-rk806-single.dtsi"
 
 / {
 	/* If hdmirx node is disabled, delete the reserved-memory node here. */
@@ -93,15 +93,15 @@
 		};
 	};
 
-	pcie20_avdd0v85: pcie20-avdd0v85 {
-		compatible = "regulator-fixed";
-		regulator-name = "pcie20_avdd0v85";
-		regulator-boot-on;
-		regulator-always-on;
-		regulator-min-microvolt = <850000>;
-		regulator-max-microvolt = <850000>;
-		vin-supply = <&avdd_0v85_s0>;
-	};
+	// pcie20_avdd0v85: pcie20-avdd0v85 {
+	// 	compatible = "regulator-fixed";
+	// 	regulator-name = "pcie20_avdd0v85";
+	// 	regulator-boot-on;
+	// 	regulator-always-on;
+	// 	regulator-min-microvolt = <850000>;
+	// 	regulator-max-microvolt = <850000>;
+	// 	vin-supply = <&avdd_0v85_s0>;
+	// };
 
 	pcie20_avdd1v8: pcie20-avdd1v8 {
 		compatible = "regulator-fixed";
@@ -194,6 +194,16 @@
 		pinctrl-0 = <&typec5v_pwren>;
 	};
 
+	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_1v1_nldo_s3";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <1100000>;
+		regulator-max-microvolt = <1100000>;
+		vin-supply = <&vcc5v0_sys>;
+	};
+
 	vcc3v3_lcd_n: vcc3v3-lcd0-n {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_lcd0_n";
@@ -209,9 +219,16 @@
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		enable-active-high;
-		gpios = <&gpio2 RK_PC4 GPIO_ACTIVE_HIGH>;
+		gpios = <&gpio1 RK_PA4 GPIO_ACTIVE_HIGH>;
 		startup-delay-us = <5000>;
 		vin-supply = <&vcc12v_dcin>;
+	};
+	vcc_3v3_sd_s0: vcc-3v3-sd-s0 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_3v3_sd_s0";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		vin-supply = <&vcc_3v3_s3>;
 	};
 
 	vcc5v0_host: vcc5v0-host {
@@ -309,11 +326,11 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&dp1_hpd>;
 	hpd-gpios = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
-	status = "okay";
+	status = "disabled";
 };
 
 &dp1_in_vp2 {
-	status = "okay";
+	status = "disabled";
 };
 
 /*
@@ -561,6 +578,14 @@
 	status = "okay";
 };
 
+&iep {
+	status = "disabled";
+};
+
+&iep_mmu {
+	status = "disabled";
+};
+
 &mdio0 {
 	rgmii_phy: phy@1 {
 		compatible = "ethernet-phy-ieee802.3-c22";
@@ -576,23 +601,23 @@
 	status = "disabled";
 };
 
-&pcie2x1l0 {
-	status = "disabled";
-};
+// &pcie2x1l0 {
+// 	status = "disabled";
+// };
 
-// PCIE M.2 NGFF E-KEY SOCKET
-&pcie2x1l1 {
-	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
-	vpcie3v3-supply = <&pcie2x1l1_3v3>;
-	status = "okay";
-};
+// // PCIE M.2 NGFF E-KEY SOCKET
+// &pcie2x1l1 {
+// 	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
+// 	vpcie3v3-supply = <&pcie2x1l1_3v3>;
+// 	status = "okay";
+// };
 
-// R8125
-&pcie2x1l2 {
-	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-	vpcie3v3-supply = <&pcie2x1l2_3v3>;
-	status = "okay";
-};
+// // R8125
+// &pcie2x1l2 {
+// 	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
+// 	vpcie3v3-supply = <&pcie2x1l2_3v3>;
+// 	status = "okay";
+// };
 
 &pcie30phy {
 	rockchip,pcie30-phymode = <PHY_MODE_PCIE_AGGREGATION>;
@@ -712,37 +737,33 @@
 	status = "okay";
 };
 
-&rk806master {
-	vcc13-supply = <&vcc_1v1_nldo_s3>;
-};
+// &route_dsi0 {
+// 	status = "disabled";
+// 	connect = <&vp3_out_dsi0>;
+// };
 
-&route_dsi0 {
-	status = "disabled";
-	connect = <&vp3_out_dsi0>;
-};
+// &route_dsi1 {
+// 	status = "okay";
+// 	connect = <&vp3_out_dsi1>;
+// };
 
-&route_dsi1 {
-	status = "okay";
-	connect = <&vp3_out_dsi1>;
-};
+// &route_hdmi0 {
+// 	status = "okay";
+// 	logo,uboot = "logo.bmp";
+// 	logo,kernel = "logo_kernel.bmp";
+// 	logo,mode = "center";
+// 	charge_logo,mode = "center";
+// 	connect = <&vp0_out_hdmi0>;
+// };
 
-&route_hdmi0 {
-	status = "okay";
-	logo,uboot = "logo.bmp";
-	logo,kernel = "logo_kernel.bmp";
-	logo,mode = "center";
-	charge_logo,mode = "center";
-	connect = <&vp0_out_hdmi0>;
-};
-
-&route_hdmi1 {
-	status = "okay";
-	logo,uboot = "logo.bmp";
-	logo,kernel = "logo_kernel.bmp";
-	logo,mode = "center";
-	charge_logo,mode = "center";
-	connect = <&vp1_out_hdmi1>;
-};
+// &route_hdmi1 {
+// 	status = "okay";
+// 	logo,uboot = "logo.bmp";
+// 	logo,kernel = "logo_kernel.bmp";
+// 	logo,mode = "center";
+// 	charge_logo,mode = "center";
+// 	connect = <&vp1_out_hdmi1>;
+// };
 
 &sata0 {
 	status = "disabled";
