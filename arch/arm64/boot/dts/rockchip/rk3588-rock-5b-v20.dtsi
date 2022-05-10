@@ -93,15 +93,15 @@
 		};
 	};
 
-	// pcie20_avdd0v85: pcie20-avdd0v85 {
-	// 	compatible = "regulator-fixed";
-	// 	regulator-name = "pcie20_avdd0v85";
-	// 	regulator-boot-on;
-	// 	regulator-always-on;
-	// 	regulator-min-microvolt = <850000>;
-	// 	regulator-max-microvolt = <850000>;
-	// 	vin-supply = <&avdd_0v85_s0>;
-	// };
+	pcie20_avdd0v85: pcie20-avdd0v85 {
+		compatible = "regulator-fixed";
+		regulator-name = "pcie20_avdd0v85";
+		regulator-boot-on;
+		regulator-always-on;
+		regulator-min-microvolt = <850000>;
+		regulator-max-microvolt = <850000>;
+		vin-supply = <&avdd_0v85_s0>;
+	};
 
 	pcie20_avdd1v8: pcie20-avdd1v8 {
 		compatible = "regulator-fixed";
@@ -192,8 +192,8 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		enable-active-high;
-		gpio = <&gpio2 RK_PC5 GPIO_ACTIVE_HIGH>;
-		vin-supply = <&vcc5v0_usb>;
+		gpio = <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
+		vin-supply = <&vcc5v0_sys>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&typec5v_pwren>;
 	};
@@ -267,9 +267,9 @@
 		enable-active-high;
 	};
 
-	vcc_mipidcphy0: vcc-mipidcphy0-regulator {
+	vcc_mipidphy0: vcc-mipidphy0-regulator {
 		compatible = "regulator-fixed";
-		regulator-name = "vcc_mipidcphy0";
+		regulator-name = "vcc_mipidphy0";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		vin-supply = <&vcc5v0_sys>;
@@ -302,7 +302,7 @@
 };
 
 &backlight {
-	pwms = <&pwm9 0 25000 0>;
+	pwms = <&pwm2 0 25000 0>;
 	status = "okay";
 };
 
@@ -355,7 +355,7 @@
 
 &dsi0_panel {
 	power-supply = <&vcc3v3_lcd_n>;
-	reset-gpios = <&gpio2 RK_PB4 GPIO_ACTIVE_LOW>;
+	reset-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_LOW>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&lcd_rst_gpio>;
 };
@@ -385,7 +385,7 @@
 	 * case.
 	 */
 
-	//reset-gpios = <&gpio2 RK_PB4 GPIO_ACTIVE_LOW>;
+	//reset-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_LOW>;
 	//pinctrl-names = "default";
 	//pinctrl-0 = <&lcd_rst_gpio>;
 };
@@ -553,7 +553,7 @@
 		reg = <0x14>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&touch_gpio>;
-		goodix,rst-gpio = <&gpio0 RK_PD2 GPIO_ACTIVE_HIGH>;
+		goodix,rst-gpio = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
 		goodix,irq-gpio = <&gpio0 RK_PD3 IRQ_TYPE_LEVEL_LOW>;
 		power-supply = <&vcc3v3_lcd_n>;
 	};
@@ -673,7 +673,7 @@
 
 	lcd {
 		lcd_rst_gpio: lcd-rst-gpio {
-			rockchip,pins = <2 RK_PB4 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <2 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -692,7 +692,7 @@
 	touch {
 		touch_gpio: touch-gpio {
 			rockchip,pins =
-				<0 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>,
+				<0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>,
 				<0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
@@ -709,7 +709,7 @@
 		};
 
 		typec5v_pwren: typec5v-pwren {
-			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <2 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -743,6 +743,7 @@
 };
 
 &pwm2 {
+	pinctrl-0 = <&pwm2m2_pins>;
 	status = "okay";
 };
 
