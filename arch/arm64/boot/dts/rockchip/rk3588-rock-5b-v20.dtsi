@@ -113,17 +113,21 @@
 		vin-supply = <&avcc_1v8_s0>;
 	};
 
-	pcie2x1l1_3v3: pcie2x1l1-3v3 {
+    // PCIe 2.0 E-Key Socket ( Wireless NIC )
+	pcie2x1l0_3v3: pcie2x1l1-3v3 {
 		compatible = "regulator-fixed";
-		regulator-name = "pcie2x1l1_3v3";
+		regulator-name = "pcie2x1l0_3v3";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
 		regulator-boot-on;
 		regulator-always-on;
 		enable-active-high;
-		gpios = <&gpio4 RK_PC4 GPIO_ACTIVE_HIGH>;
+		gpios = <&gpio1 RK_PD2 GPIO_ACTIVE_HIGH>;
 		startup-delay-us = <5000>;
-		vin-supply = <&vcc12v_dcin>;
+		vin-supply = <&vcc5v0_sys>;
+		regulator-state-mem {
+			regulator-off-in-suspend;
+		};
 	};
 
 	pcie2x1l2_3v3: pcie2x1l2-3v3 {
@@ -179,7 +183,7 @@
 	// 	 * - SDIO_RESET_L_WL_REG_ON
 	// 	 * - PDN (power down when low)
 	// 	 */
-	// 	reset-gpios = <&gpio2 RK_PB4 GPIO_ACTIVE_LOW>;		//WIFI_REG_ON_H
+	// 	reset-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;		//WIFI_REG_ON_H
 	// };
 
 	vbus5v0_typec: vbus5v0-typec {
@@ -279,20 +283,20 @@
 		pinctrl-names = "default", "rts_gpio";
 		pinctrl-0 = <&uart6m1_rtsn>, <&bt_reset_gpio>, <&bt_wake_gpio>, <&bt_irq_gpio>;
 		pinctrl-1 = <&uart6_gpios>;
-		BT,reset_gpio    = <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
-		BT,wake_gpio     = <&gpio1 RK_PA4 GPIO_ACTIVE_HIGH>;
-		BT,wake_host_irq = <&gpio2 RK_PC2 GPIO_ACTIVE_HIGH>;
+		BT,reset_gpio    = <&gpio3 RK_PA6 GPIO_ACTIVE_HIGH>;
+		BT,wake_gpio     = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
+		BT,wake_host_irq = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
 	wireless_wlan: wireless-wlan {
 		compatible = "wlan-platdata";
-		clocks = <&hym8563 1>;
+		clocks = <&hym8563>;
 		wifi_chip_type = "ap6255";
 		pinctrl-names = "default";
 		pinctrl-0 = <&wifi_host_wake_irq>, <&wifi_poweren_gpio>;
-		WIFI,host_wake_irq = <&gpio2 RK_PC1 GPIO_ACTIVE_HIGH>;
-		WIFI,poweren_gpio = <&gpio2 RK_PB4 GPIO_ACTIVE_HIGH>;
+		WIFI,host_wake_irq = <&gpio0 RK_PB2 GPIO_ACTIVE_HIGH>;
+		WIFI,poweren_gpio = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 };
@@ -523,7 +527,11 @@
 			};
 		};
 	};
-*/
+};
+
+&i2c6 {
+	status = "okay";
+
 	hym8563: hym8563@51 {
 		compatible = "haoyu,hym8563";
 		reg = <0x51>;
@@ -533,13 +541,10 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&hym8563_int>;
 		interrupt-parent = <&gpio0>;
-		interrupts = <RK_PD4 IRQ_TYPE_LEVEL_LOW>;
+		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
 		wakeup-source;
 	};
-};
 
-&i2c6 {
-	status = "okay";
 	gt1x: gt1x@14 {
 		compatible = "goodix,gt1x";
 		reg = <0x14>;
@@ -659,7 +664,7 @@
 
 	hym8563 {
 		hym8563_int: hym8563-int {
-			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 
@@ -675,11 +680,11 @@
 		};
 	};
 
-	sdio-pwrseq {
-		wifi_enable_h: wifi-enable-h {
-			rockchip,pins = <2 RK_PB4 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
+	// sdio-pwrseq {
+	// 	wifi_enable_h: wifi-enable-h {
+	// 		rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
+	// 	};
+	// };
 
 	touch {
 		touch_gpio: touch-gpio {
@@ -707,29 +712,29 @@
 
 	wireless-bluetooth {
 		uart6_gpios: uart6-gpios {
-			rockchip,pins = <1 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
 		bt_reset_gpio: bt-reset-gpio {
-			rockchip,pins = <2 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <3 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
 		bt_wake_gpio: bt-wake-gpio {
-			rockchip,pins = <1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <3 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
 		bt_irq_gpio: bt-irq-gpio {
-			rockchip,pins = <2 RK_PC2 RK_FUNC_GPIO &pcfg_pull_down>;
+			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_down>;
 		};
 	};
 
 	wireless-wlan {
 		wifi_host_wake_irq: wifi-host-wake-irq {
-			rockchip,pins = <2 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
+			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_down>;
 		};
 
 		wifi_poweren_gpio: wifi-poweren-gpio {
-			rockchip,pins = <2 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>;
+			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
