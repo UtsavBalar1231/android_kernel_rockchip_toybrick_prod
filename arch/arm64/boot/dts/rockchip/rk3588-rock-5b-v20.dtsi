@@ -621,12 +621,12 @@
 // 	status = "okay";
 // };
 
-// // R8125
-// &pcie2x1l2 {
-// 	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-// 	vpcie3v3-supply = <&pcie2x1l2_3v3>;
-// 	status = "okay";
-// };
+// R8125
+&pcie2x1l2 {
+	reset-gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_HIGH>;
+	vpcie3v3-supply = <&pcie2x1l2_3v3>;
+	status = "okay";
+};
 
 &pcie30phy {
 	rockchip,pcie30-phymode = <PHY_MODE_PCIE_AGGREGATION>;
