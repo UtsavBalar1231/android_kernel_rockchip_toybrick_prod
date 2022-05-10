@@ -386,29 +386,30 @@
 	//pinctrl-0 = <&lcd_rst_gpio>;
 };
 
-&gmac0 {
-	/* Use rgmii-rxid mode to disable rx delay inside Soc */
-	phy-mode = "rgmii-rxid";
-	clock_in_out = "output";
+// delete gmac0
+// &gmac0 {
+// 	/* Use rgmii-rxid mode to disable rx delay inside Soc */
+// 	phy-mode = "rgmii-rxid";
+// 	clock_in_out = "output";
 
-	snps,reset-gpio = <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
-	snps,reset-active-low;
-	/* Reset time is 20ms, 100ms for rtl8211f */
-	snps,reset-delays-us = <0 20000 100000>;
+// 	snps,reset-gpio = <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
+// 	snps,reset-active-low;
+// 	/* Reset time is 20ms, 100ms for rtl8211f */
+// 	snps,reset-delays-us = <0 20000 100000>;
 
-	pinctrl-names = "default";
-	pinctrl-0 = <&gmac0_miim
-		     &gmac0_tx_bus2
-		     &gmac0_rx_bus2
-		     &gmac0_rgmii_clk
-		     &gmac0_rgmii_bus>;
+// 	pinctrl-names = "default";
+// 	pinctrl-0 = <&gmac0_miim
+// 		     &gmac0_tx_bus2
+// 		     &gmac0_rx_bus2
+// 		     &gmac0_rgmii_clk
+// 		     &gmac0_rgmii_bus>;
 
-	tx_delay = <0x43>;
-	/* rx_delay = <0x3f>; */
+// 	tx_delay = <0x43>;
+// 	/* rx_delay = <0x3f>; */
 
-	phy-handle = <&rgmii_phy>;
-	status = "disabled";
-};
+// 	phy-handle = <&rgmii_phy>;
+// 	status = "disabled";
+// };
 
 &hdmi0 {
 	enable-gpios = <&gpio4 RK_PB1 GPIO_ACTIVE_HIGH>;
