@@ -765,23 +765,23 @@
 // 	connect = <&vp3_out_dsi1>;
 // };
 
-// &route_hdmi0 {
-// 	status = "okay";
-// 	logo,uboot = "logo.bmp";
-// 	logo,kernel = "logo_kernel.bmp";
-// 	logo,mode = "center";
-// 	charge_logo,mode = "center";
-// 	connect = <&vp0_out_hdmi0>;
-// };
+&route_hdmi0 {
+	status = "okay";
+	logo,uboot = "logo.bmp";
+	logo,kernel = "logo_kernel.bmp";
+	logo,mode = "center";
+	charge_logo,mode = "center";
+	connect = <&vp0_out_hdmi0>;
+};
 
-// &route_hdmi1 {
-// 	status = "okay";
-// 	logo,uboot = "logo.bmp";
-// 	logo,kernel = "logo_kernel.bmp";
-// 	logo,mode = "center";
-// 	charge_logo,mode = "center";
-// 	connect = <&vp1_out_hdmi1>;
-// };
+&route_hdmi1 {
+	status = "okay";
+	logo,uboot = "logo.bmp";
+	logo,kernel = "logo_kernel.bmp";
+	logo,mode = "center";
+	charge_logo,mode = "center";
+	connect = <&vp1_out_hdmi1>;
+};
 
 &sata0 {
 	status = "disabled";
