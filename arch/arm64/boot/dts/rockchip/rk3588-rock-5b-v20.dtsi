@@ -26,7 +26,7 @@
 	};
 
 	es8388_sound: es8388-sound {
-		status = "okay";
+		status = "disabled";
 		compatible = "rockchip,multicodecs-card";
 		rockchip,card-name = "rockchip-es8388";
 		hp-det-gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_LOW>;
@@ -560,7 +560,7 @@
 };
 
 &i2c7 {
-	status = "okay";
+	status = "disabled";
 	es8388: es8388@11 {
 		status = "okay";
 		#sound-dai-cells = <0>;
