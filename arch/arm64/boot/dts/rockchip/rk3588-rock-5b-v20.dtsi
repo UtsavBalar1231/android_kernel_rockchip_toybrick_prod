@@ -445,10 +445,10 @@
 &hdmirx_ctrler {
 	status = "okay";
 
-	pinctrl-0 = <&hdmim2_rx_cec &hdmim1_rx_hpdin &hdmim1_rx_scl &hdmim1_rx_sda>;
+	pinctrl-0 = <&hdmim1_rx_cec &hdmim1_rx_hpdin &hdmim1_rx_scl &hdmim1_rx_sda>;
 	/* Effective level used to trigger HPD: 0-low, 1-high */
 	hpd-trigger-level = <1>;
-	hdmirx-det-gpios = <&gpio2 13 GPIO_ACTIVE_LOW>;
+	hdmirx-det-gpios = <&gpio1 RK_PC6 GPIO_ACTIVE_LOW>;
 };
 
 &hdptxphy_hdmi0 {
@@ -656,6 +656,12 @@
 	dp {
 		dp1_hpd: dp1-hpd {
 			rockchip,pins = <1 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	hdmirx {
+		hdmirx_det: hdmirx-det {
+			rockchip,pins = <1 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 
