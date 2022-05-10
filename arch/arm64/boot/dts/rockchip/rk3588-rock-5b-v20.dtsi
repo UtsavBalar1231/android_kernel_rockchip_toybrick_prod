@@ -610,11 +610,13 @@
 	status = "disabled";
 };
 
-// &pcie2x1l0 {
-// 	status = "disabled";
-// };
+// PCIE M.2 NGFF E-KEY SOCKET
+&pcie2x1l0 {
+	reset-gpios = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
+	vpcie3v3-supply = <&pcie2x1l0_3v3>;
+	status = "okay";
+};
 
-// // PCIE M.2 NGFF E-KEY SOCKET
 // &pcie2x1l1 {
 // 	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
 // 	vpcie3v3-supply = <&pcie2x1l1_3v3>;
