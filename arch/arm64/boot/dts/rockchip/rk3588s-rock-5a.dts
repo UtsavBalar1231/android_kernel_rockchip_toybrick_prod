@@ -224,7 +224,11 @@
 	mem-supply = <&vdd_gpu_mem_s0>;
 	status = "okay";
 };
-
+/* ddr*/
+&dmc {
+	center-supply = <&vdd_ddr_s0>;
+	status = "disabled";
+};
 /* NPU */
 
 &rknpu {
@@ -438,6 +442,13 @@
 
 &hdmi0_sound {
 	status = "okay";
+};
+
+/*fan*/
+
+&pwm3 {
+	status = "okay";
+	pinctrl-0 = <&pwm3m1_pins>;
 };
 
 /* DP */
