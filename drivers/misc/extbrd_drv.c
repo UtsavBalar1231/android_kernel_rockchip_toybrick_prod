@@ -290,6 +290,7 @@ static ssize_t show_chan0_measure(struct device *dev, struct device_attribute *a
 	size_t count = 0;
 	struct extbrd_drvdata *ddata = dev_get_drvdata(dev);
 
+	ddata->result[0] = ext_keys_adc_iio_read(ddata, ddata->chan[0]);
 	count += sprintf(&buf[count], "%d", ddata->result[0]);
 
 	return count;
@@ -302,6 +303,7 @@ static ssize_t show_chan1_measure(struct device *dev, struct device_attribute *a
 	size_t count = 0;
 	struct extbrd_drvdata *ddata = dev_get_drvdata(dev);
 
+	ddata->result[1] = ext_keys_adc_iio_read(ddata, ddata->chan[1]);
 	count += sprintf(&buf[count], "%d", ddata->result[1]);
 
 	return count;
@@ -570,17 +572,17 @@ static int extbrd_probe(struct platform_device *pdev)
 
 	adc_chan_map = iio_channel_get_all(&pdev->dev);
 	if (IS_ERR(adc_chan_map)) {
-		EXTBRD_ERROR("no io-channels defined\n");
+		EXTBRD_ERROR("Have No Ext ADC\n");
 		adc_chan_map = NULL;
-		return -EIO;
+		ddata->has_adckeys = 0;
+		//return -EIO;
 	} else {
 		ddata->has_adckeys = 1;
 	}
 
-	if (ddata->has_adckeys == 1 && ddata->has_extleds == 1) {
+	if(ddata->has_adckeys == 1) {
 		ddata->chan[0] = &adc_chan_map[0];  //saradc channel 0
 		ddata->chan[1] = &adc_chan_map[1];  //saradc channel 3
-
 		if (device_create_file(&pdev->dev, &measure0_attr)) {
 			EXTBRD_ERROR(" device create chan0 file failed\n");
 			goto fail0;
@@ -589,7 +591,9 @@ static int extbrd_probe(struct platform_device *pdev)
 			EXTBRD_ERROR(" device create chan1 file failed\n");
 			goto fail0;
 		}
+	}
 
+	if (ddata->has_extleds == 1) {
 		ext_leds = ddata->ext_leds;
 		for (i = 0; i < ddata->led_num; i++) {
 			if (!gpio_is_valid(ext_leds[i])) {
@@ -610,13 +614,13 @@ static int extbrd_probe(struct platform_device *pdev)
 		}
 
 		/* adc polling work */
-		if (ddata->chan[0] && ddata->chan[1]) {
+		if (ddata->has_adckeys == 1 && ddata->chan[0] && ddata->chan[1]) {
 			INIT_DELAYED_WORK(&ddata->adc_poll_work, adc_key_poll);
 			schedule_delayed_work(&ddata->adc_poll_work,
 				      ADC_SAMPLE_JIFFIES);
 		}
 	} else {
-		EXTBRD_ERROR("Have No Ext adc and No leds\n");
+		EXTBRD_ERROR("Have No leds\n");
 	}
 
 	return ret;

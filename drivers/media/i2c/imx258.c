@@ -1597,11 +1597,20 @@ static int imx258_check_sensor_id(struct imx258 *imx258,
 				   struct i2c_client *client)
 {
 	struct device *dev = &imx258->client->dev;
+	int i, retry_cnt = 5;
 	int ret = 0;
 	u32 id = 0;
 
-	ret = imx258_read_reg(client, IMX258_REG_CHIP_ID,
-			       IMX258_REG_VALUE_16BIT, &id);
+	/* retry for 5 times */
+	for (i = 0; i < retry_cnt; i++) {
+		ret = imx258_read_reg(client, IMX258_REG_CHIP_ID,
+				       IMX258_REG_VALUE_16BIT, &id);
+		if (ret == 0)
+			break;
+
+		usleep_range(500, 1000);
+	}
+
 	if (id != CHIP_ID) {
 		dev_err(dev, "Unexpected sensor id(%06x), ret(%d)\n", id, ret);
 		return -ENODEV;
