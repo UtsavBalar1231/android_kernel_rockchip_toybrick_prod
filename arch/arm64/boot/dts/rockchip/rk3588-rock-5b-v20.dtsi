@@ -777,6 +777,11 @@
 	status = "disabled";
 };
 
+// emmc
+&sdhci {
+	/delete-property/ mmc-hs400-enhanced-strobe;
+};
+
 // WLAN
 &sdio {
 	max-frequency = <150000000>;
