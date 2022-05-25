@@ -442,7 +442,7 @@
 	logo,kernel = "logo_kernel.bmp";
 	logo,mode = "center";
 	charge_logo,mode = "center";
-	connect = <&vp1_out_dp0>;
+	connect = <&vp2_out_dp0>;
 };
 
 /* HDMI */
@@ -478,22 +478,13 @@
 /* DP */
 
 &dp0 {
+	status = "okay";
+	pinctrl-0 = <&dp0m1_pins>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&dp0_hpd>;
-	hpd-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;
-	status = "okay";
-};
-
-&dp0_in_vp0 {
-	status = "disabled";
-};
-
-&dp0_in_vp1 {
-	status = "okay";
 };
 
 &dp0_in_vp2 {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi0_in_vp2 {
@@ -708,9 +699,9 @@
 		};
 	};
 
-	dp {
+	/*dp {
 		dp0_hpd: dp1-hpd {
 			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
-	};
+	};*/
 };
