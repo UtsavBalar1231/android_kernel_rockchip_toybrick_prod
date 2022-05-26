@@ -181,7 +181,6 @@
 		regulator-name = "vbus5v0_typec";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
-		enable-active-high;
 		gpio = <&gpio2 RK_PB6 GPIO_ACTIVE_HIGH>;
 		vin-supply = <&vcc5v0_sys>;
 		pinctrl-names = "default";
@@ -453,7 +452,6 @@
 	status = "okay";
 	pinctrl-0 = <&i2c4m1_xfer>;
 
-/*
 	usbc0: fusb302@22 {
 		compatible = "fcs,fusb302";
 		reg = <0x22>;
@@ -480,13 +478,17 @@
 			compatible = "usb-c-connector";
 			label = "USB-C";
 			data-role = "dual";
-			power-role = "dual";
+			power-role = "sink";
 			try-power-role = "sink";
 			op-sink-microwatt = <1000000>;
+
 			sink-pdos =
-				<PDO_FIXED(5000, 1000, PDO_FIXED_USB_COMM)>;
-			source-pdos =
-				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
+				 PDO_FIXED(9000, 3000, PDO_FIXED_USB_COMM)
+				 PDO_FIXED(12000, 1500, PDO_FIXED_USB_COMM)
+				 PDO_FIXED(15000, 1200, PDO_FIXED_USB_COMM)
+				 PDO_FIXED(20000, 1000, PDO_FIXED_USB_COMM)>;
+			source-pdos = <>;
 
 			altmodes {
 				#address-cells = <1>;
@@ -519,7 +521,6 @@
 			};
 		};
 	};
-*/
 };
 
 &i2c6 {
@@ -835,6 +836,7 @@
 	pinctrl-0 = <&uart6m1_xfer &uart6m1_ctsn>;
 };
 
+// #USB3.1/DP PHY0
 &usbdp_phy0 {
 	orientation-switch;
 	svid = <0xff01>;
@@ -844,15 +846,15 @@
 	port {
 		#address-cells = <1>;
 		#size-cells = <0>;
-		// usbdp_phy0_orientation_switch: endpoint@0 {
-		// 	reg = <0>;
-		// 	emote-endpoint = <&usbc0_orien_sw>;
-		// };
+		usbdp_phy0_orientation_switch: endpoint@0 {
+			reg = <0>;
+			emote-endpoint = <&usbc0_orien_sw>;
+		};
 
-		// usbdp_phy0_dp_altmode_mux: endpoint@1 {
-		// 	reg = <1>;
-		// 	remote-endpoint = <&dp_altmode_mux>;
-		// };
+		usbdp_phy0_dp_altmode_mux: endpoint@1 {
+			reg = <1>;
+			remote-endpoint = <&dp_altmode_mux>;
+		};
 	};
 };
 
@@ -866,10 +868,10 @@
 	port {
 		#address-cells = <1>;
 		#size-cells = <0>;
-		// dwc3_0_role_switch: endpoint@0 {
-		// 	reg = <0>;
-		// 	remote-endpoint = <&usbc0_role_sw>;
-		// };
+		dwc3_0_role_switch: endpoint@0 {
+			reg = <0>;
+			remote-endpoint = <&usbc0_role_sw>;
+		};
 	};
 };
 
