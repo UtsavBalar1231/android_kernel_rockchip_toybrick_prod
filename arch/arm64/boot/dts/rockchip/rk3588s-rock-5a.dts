@@ -604,11 +604,11 @@
 /* PCIe */
 
 &combphy0_ps {
-	status = "disabled";
+	status = "okay";
 };
 
 &pcie2x1l2 {
-	status = "disabled";
+	status = "okay";
 	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&vcc3v3_pcie>;
 };
