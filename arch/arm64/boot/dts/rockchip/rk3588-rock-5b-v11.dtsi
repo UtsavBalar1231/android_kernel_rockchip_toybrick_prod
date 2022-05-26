@@ -26,7 +26,7 @@
 	};
 
 	es8388_sound: es8388-sound {
-		status = "okay";
+		status = "disalbed";
 		compatible = "rockchip,multicodecs-card";
 		rockchip,card-name = "rockchip-es8388";
 		hp-det-gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_LOW>;
@@ -208,10 +208,15 @@
 		regulator-name = "vcc3v3_pcie30";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		regulator-boot-on;
 		enable-active-high;
 		gpios = <&gpio2 RK_PC4 GPIO_ACTIVE_HIGH>;
 		startup-delay-us = <5000>;
 		vin-supply = <&vcc12v_dcin>;
+		regulator-state-mem {
+			regulator-off-in-suspend;
+		};
 	};
 
 	vcc5v0_host: vcc5v0-host {
@@ -298,22 +303,22 @@
 };
 
 &dp0 {
-	status = "okay";
+	status = "disabled";
 };
 
 &dp0_in_vp2 {
-	status = "okay";
+	status = "disabled";
 };
 
 &dp1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&dp1_hpd>;
 	hpd-gpios = <&gpio1 RK_PB5 GPIO_ACTIVE_HIGH>;
-	status = "okay";
+	status = "disabled";
 };
 
 &dp1_in_vp2 {
-	status = "okay";
+	status = "disabled";
 };
 
 /*
@@ -521,7 +526,7 @@
 };
 
 &i2c6 {
-	status = "okay";
+	status = "disabled";
 	gt1x: gt1x@14 {
 		compatible = "goodix,gt1x";
 		reg = <0x14>;
@@ -534,7 +539,7 @@
 };
 
 &i2c7 {
-	status = "okay";
+	status = "disabled";
 	es8388: es8388@11 {
 		status = "okay";
 		#sound-dai-cells = <0>;
@@ -569,7 +574,7 @@
 };
 
 &mipi_dcphy0 {
-	status = "okay";
+	status = "disabled";
 };
 
 &mipi_dcphy1 {
@@ -584,25 +589,25 @@
 &pcie2x1l1 {
 	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&pcie2x1l1_3v3>;
-	status = "okay";
+	status = "disabled";
 };
 
 // R8125
 &pcie2x1l2 {
 	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&pcie2x1l2_3v3>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pcie30phy {
 	rockchip,pcie30-phymode = <PHY_MODE_PCIE_AGGREGATION>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pcie3x4 {
 	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
 	vpcie3v3-supply = <&vcc3v3_pcie30>;
-	status = "okay";
+	status = "disabled";
 };
 
 &pinctrl {
@@ -716,13 +721,21 @@
 	vcc13-supply = <&vcc_1v1_nldo_s3>;
 };
 
+&rknpu {
+	status = "disabled";
+};
+
+&rknpu_mmu {
+	status = "disabled";
+};
+
 &route_dsi0 {
 	status = "disabled";
 	connect = <&vp3_out_dsi0>;
 };
 
 &route_dsi1 {
-	status = "okay";
+	status = "disabled";
 	connect = <&vp3_out_dsi1>;
 };
 
@@ -745,6 +758,10 @@
 };
 
 &sata0 {
+	status = "disabled";
+};
+
+&sata2 {
 	status = "disabled";
 };
 
@@ -802,45 +819,57 @@
 };
 
 &usbdp_phy0 {
-	orientation-switch;
-	svid = <0xff01>;
-	sbu1-dc-gpios = <&gpio4 RK_PA6 GPIO_ACTIVE_HIGH>;
-	sbu2-dc-gpios = <&gpio4 RK_PA7 GPIO_ACTIVE_HIGH>;
+	status = "disabled";
+	// orientation-switch;
+	// svid = <0xff01>;
+	// // sbu1-dc-gpios = <&gpio4 RK_PA6 GPIO_ACTIVE_HIGH>;
+	// // sbu2-dc-gpios = <&gpio4 RK_PA7 GPIO_ACTIVE_HIGH>;
 
-	port {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		/*
-		usbdp_phy0_orientation_switch: endpoint@0 {
-			reg = <0>;
-			// remote-endpoint = <&usbc0_orien_sw>;
-		};
+	// port {
+	// 	#address-cells = <1>;
+	// 	#size-cells = <0>;
+	// 	/*
+	// 	usbdp_phy0_orientation_switch: endpoint@0 {
+	// 		reg = <0>;
+	// 		// remote-endpoint = <&usbc0_orien_sw>;
+	// 	};
 
-		usbdp_phy0_dp_altmode_mux: endpoint@1 {
-			reg = <1>;
-			// remote-endpoint = <&dp_altmode_mux>;
-		};
-		*/
-	};
+	// 	usbdp_phy0_dp_altmode_mux: endpoint@1 {
+	// 		reg = <1>;
+	// 		// remote-endpoint = <&dp_altmode_mux>;
+	// 	};
+	// 	*/
+	// };
 };
 
-&usbdp_phy1 {
-	rockchip,dp-lane-mux = <2 3>;
+&usbdp_phy0_dp {
+	status = "disabled";
+};
+
+// &usbdp_phy1 {
+// 	// rockchip,dp-lane-mux = <2 3>;
+// };
+
+&usbdp_phy1_dp {
+	status = "disabled";
 };
 
 &usbdrd_dwc3_0 {
-	dr_mode = "otg";
-	usb-role-switch;
-	port {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		/*
-		dwc3_0_role_switch: endpoint@0 {
-			reg = <0>;
-			// remote-endpoint = <&usbc0_role_sw>;
-		};
-		*/
-	};
+        dr_mode = "peripheral";
+        phys = <&u2phy0_otg>;
+        phy-names = "usb2-phy";
+        maximum-speed = "high-speed";
+	// usb-role-switch;
+	// port {
+	// 	#address-cells = <1>;
+	// 	#size-cells = <0>;
+	// 	/*
+	// 	dwc3_0_role_switch: endpoint@0 {
+	// 		reg = <0>;
+	// 		// remote-endpoint = <&usbc0_role_sw>;
+	// 	};
+	// 	*/
+	// };
 };
 
 &usbhost3_0 {
