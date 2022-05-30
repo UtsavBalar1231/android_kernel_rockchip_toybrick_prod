@@ -539,14 +539,23 @@
 		wakeup-source;
 	};
 
-	gt1x: gt1x@14 {
-		compatible = "goodix,gt1x";
-		reg = <0x14>;
+	focaltech: focaltech@38 {
+		status = "okay";
+		compatible = "focaltech,fts";
+		reg = <0x38>;
+		//power-supply = <&vdd3v3_tp>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&touch_gpio>;
-		goodix,rst-gpio = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
-		goodix,irq-gpio = <&gpio0 RK_PD3 IRQ_TYPE_LEVEL_LOW>;
-		power-supply = <&vcc3v3_lcd_n>;
+		pinctrl-0 = <&tp_gpio>;
+		//interrupts = <&gpio1 RK_PA0 IRQ_TYPE_EDGE_FALLING>;
+		focaltech,irq-gpio = <&gpio0 RK_PD3 IRQ_TYPE_EDGE_FALLING>;
+		focaltech,reset-gpio = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>;
+		focaltech,display-coords =  <0 0 1199 1919>;
+		focaltech,max-touch-number = <10>;
+		//focaltech,have-key;
+		//focaltech,key-number = <3>;
+		//focaltech,keys = <139 102 158>;
+		//focaltech,key-y-coord = <2000>;
+		//focaltech,key-x-coords = <200 600 800>;
 	};
 };
 
@@ -689,10 +698,9 @@
 	// };
 
 	touch {
-		touch_gpio: touch-gpio {
-			rockchip,pins =
-				<0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_up>,
-				<0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
+		tp_gpio: tp-gpio {
+			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_up>,
+					<0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
