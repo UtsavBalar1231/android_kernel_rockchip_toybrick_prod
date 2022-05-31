@@ -140,12 +140,12 @@
 		};
 	};*/
 
-	ext_gmac1: external-gmac-clock {
+	/*ext_gmac1: external-gmac-clock {
 		compatible = "fixed-clock";
 		clock-frequency = <125000000>;
 		clock-output-names = "ext_gmac1";
 		#clock-cells = <0>;
-	};
+	};*/
 
 	fg6252b_pwr: fg6252b-pwr {
 		compatible = "regulator-fixed";
@@ -263,7 +263,7 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
-	wireless_bluetooth: wireless-bluetooth {
+	/*wireless_bluetooth: wireless-bluetooth {
 		compatible = "bluetooth-platdata";
 		clocks = <&hym8563>;
 		clock-names = "ext_clock";
@@ -285,7 +285,7 @@
 		WIFI,host_wake_irq = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
 		WIFI,poweren_gpio = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
 		status = "disabled";
-	};
+	};*/
 };
 
 &combphy0_ps {
@@ -359,32 +359,35 @@
 
 // ethernet
 &gmac1 {
-	phy-mode = "rgmii";
-	clock_in_out = "output";
+phy-mode = "rgmii-rxid";
+clock_in_out = "output";
 
-	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
-	snps,reset-active-low;
-	/* Reset time is 20ms, 100ms for rtl8211f */
-	snps,reset-delays-us = <0 20000 100000>;
+snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
+snps,reset-active-low;
+ /* Reset time is 20ms, 100ms for rtl8211f */
+snps,reset-delays-us = <0 20000 100000>;
 
-	assigned-clocks = <&gmac1_rgmii_clk>;
-	assigned-clock-parents = <&ext_gmac1>;
-	assigned-clock-rates = <0>, <125000000>;
+pinctrl-names = "default";
+pinctrl-0 = <&gmac1_miim
+    &gmac1_tx_bus2
+    &gmac1_rx_bus2
+    &gmac1_rgmii_clk
+    &gmac1_rgmii_bus
+    >;
 
-	pinctrl-names = "default";
-	pinctrl-0 = <&gmac1_miim
-		     &gmac1_tx_bus2
-		     &gmac1_rx_bus2
-		     &gmac1_rgmii_clk
-		     &gmac1_rgmii_bus>;
+ tx_delay = <0x3a>;
+ rx_delay = <0x00>;
 
-	tx_delay = <0x43>;
-	rx_delay = <0x3f>;
-
-	phy-handle = <&rgmii_phy1>;
-	status = "okay";
+ phy-handle = <&rgmii_phy1>;
+ status = "okay";
 };
 
+&mdio1 {
+ rgmii_phy1: phy@1 {
+  compatible = "ethernet-phy-ieee802.3-c22";
+  reg = <0x1>;
+ };
+};
 &gpu {
 	mali-supply = <&vdd_gpu_s0>;
 	mem-supply = <&vdd_gpu_mem_s0>;
@@ -456,7 +459,7 @@
 };
 
 &i2c2 {
-	status = "disabled";
+	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c2m0_xfer>;
 
@@ -522,7 +525,7 @@
 }; 
 
 &i2c3 {
-	status = "disabled";
+	status = "okay";
 
 	/*es8388: es8388@11 {
 		status = "disabled";
@@ -788,12 +791,12 @@
 	status = "okay";
 };
 
-&mdio1 {
+/*&mdio1 {
 	rgmii_phy1: phy@0 {
 		compatible = "ethernet-phy-ieee802.3-c22";
 		reg = <0x0>;
 	};
-};
+};*/
 
 // gmac1
 &mipi_dcphy0 {
@@ -889,7 +892,7 @@
 	    };
 	};
 
-	wireless-bluetooth {
+	/*wireless-bluetooth {
 		uart8_gpios: uart8-gpios {
 			rockchip,pins = <3 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
@@ -915,7 +918,7 @@
 		wifi_poweren_gpio: wifi-poweren-gpio {
 			rockchip,pins = <0 RK_PC7 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
-	};
+	};*/
 };
 
 /*fan*/
@@ -1088,11 +1091,11 @@
 	status = "okay";
 };
 
-&uart8 {
+/*&uart8 {
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart8m1_xfer &uart8m1_ctsn>;
-};
+};*/
 
 &u2phy0 {
 	orientation-switch;
