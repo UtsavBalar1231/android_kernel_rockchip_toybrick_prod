@@ -62,6 +62,11 @@
 		};
 	};
 
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		#cooling-cells = <2>;
+		pwms = <&pwm1 0 50000 0>;
+	};
 
 	hdmiin_dc: hdmiin-dc {
 		compatible = "rockchip,dummy-codec";
@@ -747,6 +752,11 @@
 			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
+};
+
+&pwm1 {
+	pinctrl-0 = <&pwm1m0_pins>;
+	status = "okay";
 };
 
 &pwm2 {
