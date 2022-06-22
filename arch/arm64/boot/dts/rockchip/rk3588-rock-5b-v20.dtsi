@@ -414,7 +414,7 @@
 	status = "okay";
 };
 
-&hdmi0_in_vp2 {
+&hdmi0_in_vp0 {
 	status = "okay";
 };
 
@@ -427,7 +427,7 @@
 	status = "okay";
 };
 
-&hdmi1_in_vp0 {
+&hdmi1_in_vp1 {
 	status = "okay";
 };
 
@@ -779,7 +779,7 @@
 	logo,kernel = "logo_kernel.bmp";
 	logo,mode = "center";
 	charge_logo,mode = "center";
-	connect = <&vp2_out_hdmi0>;
+	connect = <&vp0_out_hdmi0>;
 };
 
 &route_hdmi1 {
@@ -788,7 +788,7 @@
 	logo,kernel = "logo_kernel.bmp";
 	logo,mode = "center";
 	charge_logo,mode = "center";
-	connect = <&vp0_out_hdmi1>;
+	connect = <&vp1_out_hdmi1>;
 };
 
 &sata0 {
