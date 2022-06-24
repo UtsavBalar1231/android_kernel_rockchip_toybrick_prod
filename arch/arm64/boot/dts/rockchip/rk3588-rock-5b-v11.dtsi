@@ -782,6 +782,11 @@
 	status = "okay";
 };
 
+// emmc
+&sdhci {
+	/delete-property/ mmc-hs400-enhanced-strobe;
+};
+
 // SDCARD
 &sdmmc {
 	max-frequency = <150000000>;
