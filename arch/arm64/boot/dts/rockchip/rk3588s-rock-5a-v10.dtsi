@@ -110,7 +110,7 @@
 		compatible = "simple-audio-card";
 		simple-audio-card,format = "i2s";
 		simple-audio-card,mclk-fs = <256>;
-		simple-audio-card,name = "rockchip-es8316";
+		simple-audio-card,name = "rockchip,es8316-codec";
 		simple-audio-card,dai-link@0 {
 			format = "i2s";
 			cpu {
