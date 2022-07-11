@@ -7,7 +7,7 @@
 /dts-v1/;
 
 #include "rk3588s-rock-5a-v10.dtsi"
-//#include "rk3588s-tablet-rk806-single-camera.dtsi"
+#include "rk3588s-rock-5a-imx415.dtsi"
 
 
 / {
