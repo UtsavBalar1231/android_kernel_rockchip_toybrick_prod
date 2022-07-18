@@ -7,7 +7,7 @@
 /dts-v1/;
 
 #include "rk3588-rock-5b-v20.dtsi"
-// #include "rk3588-radxa-rock5b-imx415.dtsi"
+#include "rk3588-radxa-rock5b-imx415.dtsi"
 #include "rk3588-android.dtsi"
 
 / {

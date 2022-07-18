@@ -5,14 +5,7 @@
  */
 
 / {
-	cam_ircut0: cam_ircut {
-		status = "disabled";
-		compatible = "rockchip,ircut";
-		ircut-open-gpios = <&gpio4 RK_PA6 GPIO_ACTIVE_HIGH>;
-		ircut-close-gpios  = <&gpio4 RK_PA7 GPIO_ACTIVE_HIGH>;
-		rockchip,camera-module-index = <0>;
-		rockchip,camera-module-facing = "back";
-	};
+	compatible = "radxa,rock-5b", "rockchip,rk3588";
 };
 
 &csi2_dphy0 {
@@ -26,7 +19,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			mipidphy0_in_ucam0: endpoint@1 {
+			mipidphy1_in_ucam0: endpoint@1 {
 				reg = <1>;
 				remote-endpoint = <&imx415_out0>;
 				data-lanes = <1 2 3 4>;
@@ -37,7 +30,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			csidphy0_out: endpoint@0 {
+			csidphy1_out: endpoint@0 {
 				reg = <0>;
 				remote-endpoint = <&mipi2_csi2_input>;
 			};
@@ -58,18 +51,19 @@
 		clocks = <&cru CLK_MIPI_CAMARAOUT_M3>;
 		clock-names = "xvclk";
 		pinctrl-names = "default";
-		pinctrl-0 = <&mipim0_camera1_clk>;
+		pinctrl-0 = <&mipim0_camera3_clk>;
 		power-domains = <&power RK3588_PD_VI>;
-		pwdn-gpios = <&gpio1 RK_PB3 GPIO_ACTIVE_HIGH>;
-		avdd-supply = <&vcc_mipidphy0>;
+		pwdn-gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
+		//avdd-supply = <&vcc_mipidphy0>;
 		rockchip,camera-module-index = <0>;
 		rockchip,camera-module-facing = "back";
 		rockchip,camera-module-name = "CMK-OT2022-PX1";
 		rockchip,camera-module-lens-name = "IR0147-50IRC-8M-F20";
-		lens-focus = <&cam_ircut0>;
+		//lens-focus = <&cam_ircut0>;
 		port {
 			imx415_out0: endpoint {
-				remote-endpoint = <&mipidphy0_in_ucam0>;
+				remote-endpoint = <&mipidphy1_in_ucam0>;
 				data-lanes = <1 2 3 4>;
 			};
 		};
@@ -90,7 +84,7 @@
 
 			mipi2_csi2_input: endpoint@1 {
 				reg = <1>;
-				remote-endpoint = <&csidphy0_out>;
+				remote-endpoint = <&csidphy1_out>;
 			};
 		};
 
@@ -126,7 +120,7 @@
 
 	port {
 		mipi_lvds2_sditf: endpoint {
-			remote-endpoint = <&isp0_vir0>;
+			remote-endpoint = <&isp0_vir2>;
 		};
 	};
 };
@@ -143,14 +137,14 @@
 	status = "okay";
 };
 
-&rkisp0_vir0 {
+&rkisp0_vir2 {
 	status = "okay";
 
 	port {
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		isp0_vir0: endpoint@0 {
+		isp0_vir2: endpoint@0 {
 			reg = <0>;
 			remote-endpoint = <&mipi_lvds2_sditf>;
 		};
