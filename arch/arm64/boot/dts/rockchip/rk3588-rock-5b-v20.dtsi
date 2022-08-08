@@ -51,7 +51,6 @@
 	dsi1_backlight: dsi1-backlight {
 		status = "okay";
 		compatible = "pwm-backlight";
-		pwms = <&pwm2 0 25000 0>;
 		brightness-levels = <
 			  0  20  20  21  21  22  22  23
 			 23  24  24  25  25  26  26  27
@@ -379,14 +378,17 @@
  * mipi_dcphy1 needs to be enabled
  * when dsi1 is enabled
  */
-
+&dsi1_backlight {
+	pwms = <&pwm2 0 25000 0>;
+	status = "okay";
+};
 
 &dsi1_in_vp2 {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi1_in_vp3 {
-	status = "okay";
+	status = "disabled";
 };
 
 &dsi1 {
@@ -522,7 +524,7 @@
 	status = "okay";
 };
 
-&hdmi1_in_vp1 {
+&hdmi1_in_vp2 {
 	status = "okay";
 };
 
@@ -864,7 +866,7 @@
 
 &route_dsi1 {
 	status = "okay";
-	connect = <&vp3_out_dsi1>;
+	connect = <&vp2_out_dsi1>;
 };
 
 &route_hdmi0 {
