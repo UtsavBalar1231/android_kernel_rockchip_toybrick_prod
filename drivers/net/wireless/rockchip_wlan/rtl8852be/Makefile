@@ -54,7 +54,7 @@ CONFIG_FILE_FWIMG = n
 CONFIG_TXPWR_BY_RATE = y
 CONFIG_TXPWR_BY_RATE_EN = y
 CONFIG_TXPWR_LIMIT = y
-CONFIG_TXPWR_LIMIT_EN = auto
+CONFIG_TXPWR_LIMIT_EN = n
 CONFIG_RTW_CHPLAN = 0xFFFF
 CONFIG_RTW_ADAPTIVITY_EN = disable
 CONFIG_RTW_ADAPTIVITY_MODE = normal
@@ -108,10 +108,10 @@ EXTRA_CFLAGS += -DCONFIG_RTW_ANDROID=$(CONFIG_RTW_ANDROID)
 endif
 
 ########################## Debug ###########################
-CONFIG_RTW_DEBUG = y
+CONFIG_RTW_DEBUG = n
 # default log level is _DRV_INFO_ = 4,
 # please refer to "How_to_set_driver_debug_log_level.doc" to set the available level.
-CONFIG_RTW_LOG_LEVEL = 4
+CONFIG_RTW_LOG_LEVEL = 0
 
 # enable /proc/net/rtlxxxx/ debug interfaces
 CONFIG_PROC_DEBUG = y
@@ -193,6 +193,8 @@ else
 endif
 
 ifeq ($(CONFIG_PLATFORM_RTL8198D), y)
+DRV_PATH = $(src)
+else ifeq ($(CONFIG_PLATFORM_ARM_RK3188), y)
 DRV_PATH = $(src)
 else
 DRV_PATH = $(TopDIR)
