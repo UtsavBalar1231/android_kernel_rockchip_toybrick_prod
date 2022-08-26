@@ -1,6 +1,6 @@
 ifeq ($(CONFIG_PLATFORM_ARM_RK3188), y)
 # CONFIG_RTKM - n/m/y for not support / standalone / built-in
-CONFIG_RTKM = m
+CONFIG_RTKM = n
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 EXTRA_CFLAGS += -DCONFIG_IOCTL_CFG80211 -DRTW_USE_CFG80211_STA_EVENT
 EXTRA_CFLAGS += -DCONFIG_RADIO_WORK
@@ -11,7 +11,7 @@ EXTRA_CFLAGS += -DCONFIG_IFACE_NUMBER=3
 #EXTRA_CFLAGS += -DCONFIG_PLATFORM_ROCKCHIPS
 endif
 
-ARCH := arm
+ARCH := arm64
 CROSS_COMPILE := /home/android_sdk/Rockchip/Rk3188/prebuilts/gcc/linux-x86/arm/arm-eabi-4.6/bin/arm-eabi-
 KSRC := /home/android_sdk/Rockchip/Rk3188/kernel
 
