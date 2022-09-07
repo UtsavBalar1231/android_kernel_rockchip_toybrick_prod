@@ -161,7 +161,7 @@ static patch_info fw_patch_table[] = {
 { 0x13D3, 0x3565, 0x8852, 0, 0, "mp_rtl8852au_fw", "rtl8852au_fw", "rtl8852au_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852AU */
 { 0x13D3, 0x3566, 0x8852, 0, 0, "mp_rtl8852au_fw", "rtl8852au_fw", "rtl8852au_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852AU */
 { 0x04C5, 0x165C, 0x8852, 0, 0, "mp_rtl8852au_fw", "rtl8852au_fw", "rtl8852au_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852AU */
-{ 0x0BDA, 0xB852, 0x8852, 0, 0, "mp_rtl8852au_fw", "rtl8852au_fw", "rtl8852au_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852AU */
+{ 0x0BDA, 0xB852, 0x8852, 0, 0, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852BU */
 { 0x0BDA, 0xA85B, 0x8852, 0, 0, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852B */
 { 0x0BDA, 0xB85B, 0x8852, 0, 0, "mp_rtl8852bu_fw", "rtl8852bu_fw", "rtl8852bu_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852B */
 { 0x0BDA, 0xC85A, 0x8852, 0, 0, "mp_rtl8852cu_fw", "rtl8852cu_fw", "rtl8852cu_config", NULL, 0 ,CONFIG_MAC_OFFSET_GEN_4PLUS, MAX_PATCH_SIZE_40K}, /*RTL8852C */

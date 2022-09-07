@@ -432,3 +432,4 @@ config BT_RTKBTUSB
 	RTK Bluetooth HCI USB driver
 
 endmenu
+
