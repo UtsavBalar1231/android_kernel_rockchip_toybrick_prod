@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "rk3588-rock-5b-v20.dtsi"
+#include "rk3588-radxa-rock5b-imx415.dtsi"
+#include "rk3588-android.dtsi"
+
+/ {
+	model = "Radxa ROCK 5B";
+	compatible = "radxa,rock-5b", "rockchip,rk3588-evb1-lp4-v10", "rockchip,rk3588";
+};

@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
+ *
+ */
+
+/dts-v1/;
+
+#include "rk3588s-rock-5a-v10.dtsi"
+#include "rk3588s-rock-5a-imx415.dtsi"
+
+
+/ {
+	model = "Rockchip RK3588S Radxa Rock 5A Board";
+	compatible = "rockchip,rk3588s-rock-5a", "rockchip,rk3588";
+};
