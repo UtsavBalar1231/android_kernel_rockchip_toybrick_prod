@@ -332,12 +332,28 @@
 	status = "okay";
 };
 
+&dmc {
+	center-supply = <&vdd_ddr_s0>;
+	mem-supply = <&vdd_log_s0>;
+	status = "okay";
+};
+
+&dfi {
+	status = "okay";
+};
+
+
 &dp0 {
 	status = "okay";
 };
 
 &dp0_in_vp2 {
 	status = "okay";
+};
+
+&route_dp0 {
+	status = "okay";
+	connect = <&vp2_out_dp0>;
 };
 
 &dp1 {
@@ -971,11 +987,20 @@
 	};
 };
 
+&usbdp_phy0_u3 {
+	status = "okay";
+};
+
+&usbdp_phy0_dp {
+	status = "okay";
+};
+
 &usbdp_phy1 {
 	rockchip,dp-lane-mux = <2 3>;
 };
 
 &usbdrd_dwc3_0 {
+	status = "okay";
 	dr_mode = "otg";
 	usb-role-switch;
 	port {
@@ -989,11 +1014,11 @@
 };
 
 &usbhost3_0 {
-	status = "disabled";
+	status = "okay";
 };
 
 &usbhost_dwc3_0 {
-	status = "disabled";
+	status = "okay";
 };
 
 &work_led {
