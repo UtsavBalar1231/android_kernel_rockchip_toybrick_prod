@@ -392,11 +392,11 @@
 };
 
 &dsi1_in_vp2 {
-	status = "okay";
+	status = "disabled";
 };
 
 &dsi1_in_vp3 {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi1 {
@@ -532,7 +532,7 @@
 	status = "okay";
 };
 
-&hdmi1_in_vp2 {
+&hdmi1_in_vp1 {
 	status = "okay";
 };
 
@@ -596,7 +596,8 @@
 				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
 				 PDO_FIXED(9000, 3000, PDO_FIXED_USB_COMM)
 				 PDO_FIXED(12000, 2500, PDO_FIXED_USB_COMM)>;
-			source-pdos = <>;
+			source-pdos =
+				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
 
 			altmodes {
 				#address-cells = <1>;
@@ -941,7 +942,7 @@
 		#size-cells = <0>;
 		usbdp_phy0_orientation_switch: endpoint@0 {
 			reg = <0>;
-			emote-endpoint = <&usbc0_orien_sw>;
+			remote-endpoint = <&usbc0_orien_sw>;
 		};
 
 		usbdp_phy0_dp_altmode_mux: endpoint@1 {
@@ -961,6 +962,19 @@
 
 &usbdp_phy1 {
 	rockchip,dp-lane-mux = <2 3>;
+};
+
+&dp0 {
+	status = "okay";
+};
+
+&dp0_in_vp2 {
+	status = "okay";
+};
+
+&route_dp0 {
+	status = "okay";
+	connect = <&vp2_out_dp0>;
 };
 
 &usbdrd_dwc3_0 {
