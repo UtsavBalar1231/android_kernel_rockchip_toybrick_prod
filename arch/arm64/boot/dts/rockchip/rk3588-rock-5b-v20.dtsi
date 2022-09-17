@@ -179,9 +179,9 @@
 	};
 
 	rk_headset: rk-headset {
-		status = "disabled";
+		status = "okay";
 		compatible = "rockchip_headset";
-		headset_gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_LOW>;
+		headset_gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&hp_det>;
 		io-channels = <&saradc 3>;
@@ -847,7 +847,7 @@
 
 &route_dsi1 {
 	status = "okay";
-	connect = <&vp2_out_dsi1>;
+	connect = <&vp3_out_dsi1>;
 };
 
 &route_hdmi0 {
