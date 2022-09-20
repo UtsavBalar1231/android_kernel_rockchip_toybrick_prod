@@ -9,6 +9,12 @@
 #include "rk3588-evb.dtsi"
 #include "rk3588-rk806-5B-v20.dtsi"
 / {
+	aliases {
+		mmc0 = &sdmmc;
+		mmc1 = &sdhci;
+		mmc2 = &sdio;
+	};
+
 	/* If hdmirx node is disabled, delete the reserved-memory node here. */
 	reserved-memory {
 		#address-cells = <2>;
@@ -874,6 +880,7 @@
 
 // emmc
 &sdhci {
+	supports-sd;
 	/delete-property/ mmc-hs400-enhanced-strobe;
 };
 
@@ -896,7 +903,7 @@
 
 // SDCARD
 &sdmmc {
-	max-frequency = <150000000>;
+	max-frequency = <200000000>;
 	no-sdio;
 	no-mmc;
 	bus-width = <4>;
@@ -904,7 +911,11 @@
 	cap-sd-highspeed;
 	disable-wp;
 	sd-uhs-sdr104;
+	supports-emmc;
+	vmmc-supply = <&vcc_3v3_s3>;
 	vqmmc-supply = <&vcc_3v3_sd_s0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc_bus4 &sdmmc_clk &sdmmc_cmd &sdmmc_det>;
 	status = "okay";
 };
 
