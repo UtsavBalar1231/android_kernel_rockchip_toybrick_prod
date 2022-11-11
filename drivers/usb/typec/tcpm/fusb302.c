@@ -676,6 +676,7 @@ static int tcpm_set_cc(struct tcpc_dev *dev, enum typec_cc_status cc)
 			goto done;
 		}
 		chip->intr_comp_chng = true;
+		chip->intr_bc_lvl = false;
 		break;
 	case TYPEC_CC_RD:
 		ret = fusb302_i2c_mask_write(chip, FUSB_REG_MASK,
@@ -683,11 +684,12 @@ static int tcpm_set_cc(struct tcpc_dev *dev, enum typec_cc_status cc)
 					     FUSB_REG_MASK_COMP_CHNG,
 					     FUSB_REG_MASK_COMP_CHNG);
 		if (ret < 0) {
-			fusb302_log(chip, "cannot set SNK interrupt, ret=%d",
+			fusb302_log(chip, "cannot set SRC interrupt, ret=%d",
 				    ret);
 			goto done;
 		}
 		chip->intr_bc_lvl = true;
+		chip->intr_comp_chng = false;
 		break;
 	default:
 		break;
@@ -1721,6 +1723,11 @@ static int fusb302_probe(struct i2c_client *client,
 	if (IS_ERR(chip->irq_wq))
 		return PTR_ERR(chip->irq_wq);
 	sched_set_fifo(chip->irq_wq->task);
+
+	chip->irq_worker = kthread_create_worker(0, dev_name(dev));
+	if (IS_ERR(chip->irq_worker))
+		return PTR_ERR(chip->irq_worker);
+	sched_set_fifo(chip->irq_worker->task);
 
 	spin_lock_init(&chip->irq_lock);
 	kthread_init_work(&chip->irq_work, fusb302_irq_work);
