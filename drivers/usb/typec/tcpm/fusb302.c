@@ -1724,11 +1724,6 @@ static int fusb302_probe(struct i2c_client *client,
 		return PTR_ERR(chip->irq_wq);
 	sched_set_fifo(chip->irq_wq->task);
 
-	chip->irq_worker = kthread_create_worker(0, dev_name(dev));
-	if (IS_ERR(chip->irq_worker))
-		return PTR_ERR(chip->irq_worker);
-	sched_set_fifo(chip->irq_worker->task);
-
 	spin_lock_init(&chip->irq_lock);
 	kthread_init_work(&chip->irq_work, fusb302_irq_work);
 	INIT_DELAYED_WORK(&chip->bc_lvl_handler, fusb302_bc_lvl_handler_work);
