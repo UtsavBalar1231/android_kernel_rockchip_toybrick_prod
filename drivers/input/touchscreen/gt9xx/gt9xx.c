@@ -92,10 +92,9 @@ static ssize_t gt91xx_config_read_proc(struct file *, char __user *, size_t, lof
 static ssize_t gt91xx_config_write_proc(struct file *, const char __user *, size_t, loff_t *);
 
 static struct proc_dir_entry *gt91xx_config_proc = NULL;
-static const struct file_operations config_proc_ops = {
-    .owner = THIS_MODULE,
-    .read = gt91xx_config_read_proc,
-    .write = gt91xx_config_write_proc,
+static const struct proc_ops config_proc_ops = {
+    .proc_read = gt91xx_config_read_proc,
+    .proc_write = gt91xx_config_write_proc,
 };
 
 #if GTP_CREATE_WR_NODE
