@@ -222,7 +222,7 @@ struct ov50c40 {
 	struct otp_info		*otp;
 	u32			spd_id;
 };
-
+#define DEBUG
 #define to_ov50c40(sd) container_of(sd, struct ov50c40, subdev)
 #ifdef DEBUG
 static const struct regval ov50c40_10bit_4096x3072_dphy_regs[] = {
@@ -5764,6 +5764,27 @@ static const struct other_data ov50c40_spd = {
  * }
  */
 static const struct ov50c40_mode supported_modes_dphy[] = {
+#if 1// 3399 just support
+	{
+		.bus_fmt = MEDIA_BUS_FMT_SGBRG10_1X10,
+		.width = 4096,
+		.height = 3072,
+		.max_fps = {
+			.numerator = 10000,
+			.denominator = 150000,
+		},
+		.exp_def = 0x0240,
+		.hts_def = 0x0834 * 4,
+		.vts_def = 0x0c66,
+		.mipi_freq_idx = 1,
+		.bpp = 10,
+		.reg_list = ov50c40_10bit_4096x3072_dphy_regs,
+		.hdr_mode = NO_HDR,
+		.spd = &ov50c40_spd,
+		.vc[PAD0] = V4L2_MBUS_CSI2_CHANNEL_0,
+	},
+
+#else
 	{
 		.bus_fmt = MEDIA_BUS_FMT_SGBRG10_1X10,
 		.width = 4096,
@@ -5854,6 +5875,7 @@ static const struct ov50c40_mode supported_modes_dphy[] = {
 		.hdr_mode = NO_HDR,
 		.vc[PAD0] = V4L2_MBUS_CSI2_CHANNEL_0,
 	},
+#endif
 #endif
 };
 
