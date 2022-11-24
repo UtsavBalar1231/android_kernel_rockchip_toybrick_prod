@@ -72,17 +72,17 @@
 	i2c-scl-falling-time-ns = <15>;
 	clock-frequency=<400000>;
 
-	imx415: imx415@10 {
+	imx415: imx415@1a {
 		compatible = "sony,imx415";
 		status = "okay";
-		reg = <0x10>;
+		reg = <0x1a>;
 		clocks = <&cru SCLK_CIF_OUT>;
 		clock-names = "xvclk";
 		assigned-clocks = <&cru SCLK_CIF_OUT_SRC>;
 		assigned-clock-rates = <600000000>;
 		//conflict with csi-ctl-gpios
-		reset-gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_HIGH>;
-		power-gpios = <&gpio3 RK_PD7 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
+		power-gpios = <&gpio3 RK_PD7 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "rockchip,camera_default";
 		pinctrl-0 = <&cif_clkout>;
 		rockchip,camera-module-index = <0>;
