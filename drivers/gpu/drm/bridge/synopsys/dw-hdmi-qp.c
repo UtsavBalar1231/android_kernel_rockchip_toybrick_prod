@@ -1951,6 +1951,21 @@ dw_hdmi_connector_detect(struct drm_connector *connector, bool force)
 		else
 			result = connector_status_disconnected;
 	}
+	mutex_lock(&hdmi->mutex);
+
+    	if (result != hdmi->last_connector_result) {
+
+        dev_dbg(hdmi->dev, "read_hpd result: %d", result);
+
+        extcon_set_state_sync(hdmi->extcon, EXTCON_DISP_HDMI, result == connector_status_connected);
+
+        handle_plugged_change(hdmi,result == connector_status_connected);
+
+        hdmi->last_connector_result = result;
+
+    	}
+
+    	mutex_unlock(&hdmi->mutex);
 
 	return result;
 }
