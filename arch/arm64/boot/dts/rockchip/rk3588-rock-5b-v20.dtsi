@@ -970,6 +970,10 @@
 	status = "okay";
 };
 
+&sdmmc {
+	/delete-node/ sd-uhs-sdr104;
+};
+
 &u2phy0_otg {
 	rockchip,typec-vbus-det;
 };
