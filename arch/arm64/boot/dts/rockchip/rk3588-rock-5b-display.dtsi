@@ -84,7 +84,7 @@
 		vccio-supply = <&vcc_1v8_s0>;
 		reset-gpios = <&gpio2 RK_PC1 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
-		pinctrl-0 = <&lcd_rst_gpio>;
+		pinctrl-0 = <&dsi1_lcd_rst_gpio>;
      	
 		ports {
 			#address-cells = <1>;
@@ -164,7 +164,7 @@
 &pinctrl {
 
 	dsi1-lcd {
-		lcd_rst_gpio: lcd-rst-gpio {
+		dsi1_lcd_rst_gpio: dsi1-lcd-rst-gpio {
 			rockchip,pins =
 				<2 RK_PC1 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
