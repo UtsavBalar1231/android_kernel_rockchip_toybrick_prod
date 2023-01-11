@@ -77,6 +77,20 @@
 		default-brightness-level = <200>;
 	};
 
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		#cooling-cells = <2>;
+		pwms = <&pwm3 0 50000 0>;
+		cooling-levels = <0 50 100 150 200 255>;
+		rockchip,temp-trips = <
+                50000   1
+                55000   2
+                60000   3
+                65000   4
+                70000   5
+        >;
+	};
+
 	combophy_avdd0v85: combophy-avdd0v85 {
 		compatible = "regulator-fixed";
 		regulator-name = "combophy_avdd0v85";
