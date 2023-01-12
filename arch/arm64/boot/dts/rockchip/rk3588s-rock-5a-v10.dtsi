@@ -182,17 +182,6 @@
 		vin-supply = <&vcc12v_dcin>;
 	};
 
-	usbwifibt_6252b_pwr: usbwifibt-6252b-pwr {
-		compatible = "regulator-fixed";
-		regulator-name = "usbwifibt_6252b_pwr";
-		regulator-always-on;
-		regulator-boot-on;
-		enable-active-low;
-		gpios = <&gpio3 RK_PC0 GPIO_ACTIVE_LOW>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&usbwifibt_6252b_drv>;
-	};
-
 	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc_1v1_nldo_s3";
@@ -379,12 +368,7 @@
 &i2c5 {
 	status = "okay";
 	pinctrl-names = "default";
-	//pinctrl-0 = <&i2c5m3_xfer>;
 	pinctrl-0 = <&i2c5m0_xfer>;
-};
-
-&i2c5 {
-	status = "okay";
 
 	hym8563: hym8563@51 {
 		compatible = "haoyu,hym8563";
@@ -537,49 +521,16 @@
 			rockchip,pins = <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
-		usbwifibt_6252b_drv: fg6252b-pwr-pin {
-			rockchip,pins = <3 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
-	    };
-
 		vcc5v0_otg_en: vcc5v0-otg-en {
 			rockchip,pins = <0 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
 	};
 
-	wifibt {
-		wl_reset: wl-reset {
-			rockchip,pins = <0 RK_PD0 RK_FUNC_GPIO &pcfg_pull_up>;
-	    };
-
-		wl_dis: wl-dis {
-			rockchip,pins = <0 RK_PD5 RK_FUNC_GPIO &pcfg_output_high>;
-	    };
-
-		wl_wake_host: wl-wake-host {
-			rockchip,pins = <0 RK_PC7 RK_FUNC_GPIO &pcfg_pull_up>;
-	    };
-
-		bt_dis: bt-dis {
-			rockchip,pins = <0 RK_PD4 RK_FUNC_GPIO &pcfg_output_high>;
-	    };
-
-		bt_wake_host: bt-wake-host {
-			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
-	    };
-	};
-
-
 	usb-typec {
 		usbc0_int: usbc0-int {
 			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
-
-		/*
-		 *typec5v_pwren: typec5v-pwren {
-		 *        rockchip,pins = <1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
-		 *};
-		 */
 	};
 
 	
