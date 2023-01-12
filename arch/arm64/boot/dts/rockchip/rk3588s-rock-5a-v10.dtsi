@@ -37,46 +37,6 @@
 		};
 	};
 
-	backlight: backlight {
-		compatible = "pwm-backlight";
-		pwms = <&pwm13 0 25000 0>;
-		brightness-levels = <
-			  0  20  20  21  21  22  22  23
-			 23  24  24  25  25  26  26  27
-			 27  28  28  29  29  30  30  31
-			 31  32  32  33  33  34  34  35
-			 35  36  36  37  37  38  38  39
-			 40  41  42  43  44  45  46  47
-			 48  49  50  51  52  53  54  55
-			 56  57  58  59  60  61  62  63
-			 64  65  66  67  68  69  70  71
-			 72  73  74  75  76  77  78  79
-			 80  81  82  83  84  85  86  87
-			 88  89  90  91  92  93  94  95
-			 96  97  98  99 100 101 102 103
-			104 105 106 107 108 109 110 111
-			112 113 114 115 116 117 118 119
-			120 121 122 123 124 125 126 127
-			128 129 130 131 132 133 134 135
-			136 137 138 139 140 141 142 143
-			144 145 146 147 148 149 150 151
-			152 153 154 155 156 157 158 159
-			160 161 162 163 164 165 166 167
-			168 169 170 171 172 173 174 175
-			176 177 178 179 180 181 182 183
-			184 185 186 187 188 189 190 191
-			192 193 194 195 196 197 198 199
-			200 201 202 203 204 205 206 207
-			208 209 210 211 212 213 214 215
-			216 217 218 219 220 221 222 223
-			224 225 226 227 228 229 230 231
-			232 233 234 235 236 237 238 239
-			240 241 242 243 244 245 246 247
-			248 249 250 251 252 253 254 255
-		>;
-		default-brightness-level = <200>;
-	};
-
 	fan: pwm-fan {
 		compatible = "pwm-fan";
 		#cooling-cells = <2>;
@@ -177,15 +137,6 @@
 		regulator-max-microvolt = <12000000>;
 	};
 
-	vcc3v3_lcd_n: vcc3v3-lcd0-n {
-		compatible = "regulator-fixed";
-		regulator-name = "vcc3v3_lcd0_n";
-		regulator-boot-on;
-		enable-active-high;
-		gpio = <&gpio1 RK_PB2 GPIO_ACTIVE_HIGH>;
-		vin-supply = <&vcc_3v3_s0>;
-	};
-
 	vcc3v3_pcie: vcc3v3-pcie {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_pcie";
@@ -265,15 +216,10 @@
 
 /* ddr*/
 &dmc {
-	center-supply = <&vdd_ddr_s0>;
 	status = "disabled";
 };
 
-&dsi0_in_vp2 {
-	status = "okay";
-};
-
-&dsi0_in_vp3 {
+&dfi {
 	status = "disabled";
 };
 
@@ -283,31 +229,8 @@
 	pinctrl-names = "default";
 };
 
-/*
- * mipi_dcphy0 needs to be enabled
- * when dsi0 is enabled
- */
-&dsi0 {
-	status = "disabled";
-};
-
-&dsi1 {
-	status = "disabled";
-};
-
 &dp0_in_vp2 {
 	status = "okay";
-};
-
-&dsi0_in_vp2 {
-	status = "disabled";
-};
-&dsi1_in_vp2 {
-	status = "disabled";
-};
-
-&dsi1_in_vp3 {
-	status = "disabled";
 };
 
 // ethernet
@@ -413,49 +336,6 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c2m0_xfer>;
 
-	cw2015@62 {
-		status = "disabled";
-		compatible = "cellwise,cw2015";
-		reg = <0x62>;
-		cellwise,battery-profile = /bits/ 8
-			<0x17 0x67 0x6C 0x66 0x65 0x64 0x61 0x5B
-			 0x5F 0x75 0x49 0x52 0x50 0x51 0x48 0x3D
-			 0x34 0x2C 0x29 0x21 0x23 0x2D 0x40 0x49
-			 0x25 0x5C 0x0B 0x85 0x10 0x1F 0x31 0x49
-			 0x58 0x5E 0x63 0x6C 0x3E 0x1D 0x9A 0x35
-			 0x0A 0x33 0x15 0x3B 0x70 0x99 0xAB 0x17
-			 0x40 0x75 0x99 0xC4 0x80 0xB5 0xDE 0xCB
-			 0x2F 0x00 0x64 0xA5 0xB5 0x00 0xF8 0x39>;
-		cellwise,monitor-interval-ms = <5000>;
-		power-supplies = <&bq25895>;
-	};
-
-	bq25895: charger@6a {
-		status = "disabled";
-		compatible = "ti,bq25895", "ti,bq25890";
-		reg = <0x6a>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&charger_ok>;
-		interrupt-parent = <&gpio3>;
-		interrupts = <RK_PC3 IRQ_TYPE_EDGE_FALLING>;
-		otg-mode-en-gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_HIGH>;
-		ti,usb-charger-detection = <&usbc0>;
-
-		ti,battery-regulation-voltage = <4400000>; /* 4.4V */
-		ti,charge-current = <1600000>; /* 1.6A */
-		ti,termination-current = <66000>;  /* 66mA */
-		ti,precharge-current = <130000>; /* 130mA */
-		ti,minimum-sys-voltage = <3000000>; /* 3V */
-		ti,boost-voltage = <5000000>; /* 5V */
-		ti,boost-max-current = <1600000>; /* 1600mA */
-		regulators {
-			vbus5v0_typec: vbus5v0-typec {
-				regulator-compatible = "otg-vbus";
-				regulator-name = "vbus5v0_typec";
-			};
-		};
-	};
-
 	vdd_npu_s0: vdd_npu_mem_s0: rk8602@42 {
 		compatible = "rockchip,rk8602";
 		reg = <0x42>;
@@ -482,23 +362,6 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c4m3_xfer>;
-
-	focaltech: focaltech@38 {
-		status = "okay";
-		compatible = "focaltech,fts";
-		reg = <0x38>;
-		power-supply = <&vcc3v3_lcd_n>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&touch_gpio>;
-		focaltech,irq-gpio = <&gpio1 RK_PB5 IRQ_TYPE_LEVEL_LOW>;
-		focaltech,reset-gpio = <&gpio1 RK_PB4 GPIO_ACTIVE_HIGH>;
-		focaltech,have-key = <0>;
-		focaltech,key-number = <3>;
-		focaltech,keys = <256 1068 64 64 128 1068 64 64 192 1068 64 64>;
-		focaltech,key-x-coord = <1600>;
-		focaltech,key-y-coord = <2176>;
-		focaltech,max-touch-number = <5>;
-	};
 };
 
 &i2c5 {
@@ -506,8 +369,6 @@
 	pinctrl-names = "default";
 	//pinctrl-0 = <&i2c5m3_xfer>;
 	pinctrl-0 = <&i2c5m0_xfer>;
-
-	
 };
 
 &i2c5 {
@@ -545,58 +406,6 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c8m2_xfer>;
-
-	usbc0: fusb302@22 {
-		compatible = "fcs,fusb302";
-		reg = <0x22>;
-		interrupt-parent = <&gpio0>;
-		interrupts = <RK_PC4 IRQ_TYPE_LEVEL_LOW>;
-		int-n-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_LOW>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&usbc0_int>;
-		vbus-supply = <&vbus5v0_typec>;
-		status = "disabled";
-
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-				usbc0_role_sw: endpoint@0 {
-					remote-endpoint = <&dwc3_0_role_switch>;
-				};
-			};
-		};
-
-		usb_con: connector {
-			compatible = "usb-c-connector";
-			label = "USB-C";
-			data-role = "dual";
-			power-role = "dual";
-			try-power-role = "sink";
-			op-sink-microwatt = <1000000>;
-			sink-pdos =
-				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
-				 PDO_FIXED(9000, 3000, PDO_FIXED_USB_COMM)
-				 PDO_FIXED(12000, 3000, PDO_FIXED_USB_COMM)>;
-			source-pdos =
-				<PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
-
-			ports {
-				#address-cells = <1>;
-				#size-cells = <0>;
-
-				port@0 {
-					reg = <0>;
-					usbc0_orien_sw: endpoint {
-						remote-endpoint = <&u2phy0_orientation_switch>;
-					};
-				};
-			};
-
-		};
-	};
 };
 
 &i2s0_8ch {
@@ -693,13 +502,6 @@
 };
 
 &pinctrl {
-	charger {
-		charger_ok: charger_ok {
-			rockchip,pins = <0 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>,
-					<3 RK_PC3 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
 	headphone {
 		hp_det: hp-det {
 			rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
@@ -715,14 +517,6 @@
 	lcd {
 		lcd_rst_gpio: lcd-rst-gpio {
 			rockchip,pins = <1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
-
-	touch {
-		touch_gpio: touch-gpio {
-			rockchip,pins =
-				<1 RK_PB4 RK_FUNC_GPIO &pcfg_pull_up>,
-				<1 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
@@ -955,15 +749,6 @@
 &u2phy0 {
 	orientation-switch;
 	status = "okay";
-
-	port {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		u2phy0_orientation_switch: endpoint@0 {
-			reg = <0>;
-			remote-endpoint = <&usbc0_orien_sw>;
-		};
-	};
 };
 
 &u2phy0_otg {
@@ -979,19 +764,6 @@
 &usbdrd_dwc3_0 {
 	dr_mode = "otg";
 	status = "okay";
-
-	maximum-speed = "high-speed";
-	phys = <&u2phy0_otg>;
-	phy-names = "usb2-phy";
-	usb-role-switch;
-	port {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		dwc3_0_role_switch: endpoint@0 {
-			reg = <0>;
-			remote-endpoint = <&usbc0_role_sw>;
-		};
-	};
 };
 
 &u2phy0 {
