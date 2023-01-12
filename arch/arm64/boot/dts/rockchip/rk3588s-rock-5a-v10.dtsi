@@ -119,15 +119,6 @@
 		};
 	};
 
-	rk_headset: rk-headset {
-		status = "okay";
-		compatible = "rockchip_headset";
-		headset_gpio = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&hp_det>;
-		io-channels = <&saradc 3>;
-	};
-
 	vcc12v_dcin: vcc12v-dcin {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc12v_dcin";
@@ -498,12 +489,6 @@
 };
 
 &pinctrl {
-	headphone {
-		hp_det: hp-det {
-			rockchip,pins = <1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
 	hym8563 {
 		rtc_int: rtc-int {
 			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
