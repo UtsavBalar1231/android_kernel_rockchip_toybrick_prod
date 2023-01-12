@@ -160,6 +160,18 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
+	vcc5v0_otg: vcc5v0-otg-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc5v0_otg";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		enable-active-high;
+		gpio = <&gpio0 RK_PD4 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_otg_en>;
+		vin-supply = <&vcc5v0_sys>;
+	};
+
 	vcc5v0_sys: vcc5v0-sys {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0_sys";
@@ -529,6 +541,10 @@
 			rockchip,pins = <3 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
 	    };
 
+		vcc5v0_otg_en: vcc5v0-otg-en {
+			rockchip,pins = <0 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
 	};
 
 	wifibt {
@@ -656,10 +672,6 @@
 	rockchip,sleep-debug-en = <1>;
 };
 
-/*&route_dsi0 {
-	status = "okay";
-	connect = <&vp2_out_dsi0>;
-};*/
 &route_hdmi0 {
 	status = "okay";
 	logo,uboot = "logo.bmp";
@@ -683,16 +695,6 @@
 	vref-supply = <&vcc_1v8_s0>;
 };
 
-/*&sdhci {
-	bus-width = <8>;
-	no-sdio;
-	no-sd;
-	non-removable;
-	max-frequency = <200000000>;
-	mmc-hs400-1_8v;
-	mmc-hs400-enhanced-strobe;
-	status = "okay";
-};*/
 /* eMMC */
 
 &sdhci {
@@ -740,20 +742,11 @@
 	status = "okay";
 };
 
-/*&uart8 {
-	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart8m1_xfer &uart8m1_ctsn>;
-};*/
-
 &u2phy0 {
-	orientation-switch;
 	status = "okay";
 };
 
 &u2phy0_otg {
-	rockchip,sel-pipe-phystatus;
-	rockchip,typec-vbus-det;
 	status = "okay";
 };
 
@@ -763,6 +756,7 @@
 
 &usbdrd_dwc3_0 {
 	dr_mode = "otg";
+	extcon = <&u2phy0>;
 	status = "okay";
 };
 
@@ -772,7 +766,7 @@
 
 &u2phy0_otg {
 	status = "okay";
-	vbus-supply = <&vcc5v0_host>;
+	vbus-supply = <&vcc5v0_otg>;
 };
 
 &u2phy2 {
@@ -786,8 +780,6 @@
 
 &usb_host0_ehci {
 	status = "okay";
-	pinctrl-names = "default";
-	pinctrl-0 = <&wl_reset>, <&wl_dis>, <&wl_wake_host>, <&bt_dis &bt_wake_host>;
 };
 
 &usb_host0_ohci {
@@ -816,7 +808,7 @@
 };
 
 &usbdrd_dwc3_0 {
-	dr_mode = "host";
+	dr_mode = "otg";
 	status = "okay";
 };
 
