@@ -58,6 +58,9 @@
 #define V4L2_CID_DIGITAL_GAIN		V4L2_CID_GAIN
 #endif
 
+#define RK3399_DEBUG
+//#define RK3399_IMX415_1080P
+
 #define MIPI_FREQ_891M			891000000
 #define MIPI_FREQ_446M			446000000
 #define MIPI_FREQ_743M			743000000
@@ -349,6 +352,18 @@ static __maybe_unused const struct regval imx415_global_12bit_3864x2192_regs[] =
 };
 
 static __maybe_unused const struct regval imx415_linear_12bit_3864x2192_891M_regs[] = {
+
+#ifdef RK3399_DEBUG
+	{0x301c, 0x04},
+	{0x3040, 0x0c},
+	{0x3041, 0x00},
+	{0x3042, 0x00},
+	{0x3043, 0x0f},
+	{0x3044, 0x20},
+	{0x3045, 0x00},
+	{0x3046, 0xe0},
+	{0x3047, 0x10},
+#endif
 	{0x3020, 0x00},
 	{0x3021, 0x00},
 	{0x3022, 0x00},
@@ -678,6 +693,17 @@ static __maybe_unused const struct regval imx415_linear_10bit_3864x2192_891M_reg
 };
 
 static __maybe_unused const struct regval imx415_linear_12bit_1932x1096_594M_regs[] = {
+#ifdef RK3399_IMX415_1080P
+	{0x301c, 0x04},
+	{0x3040, 0x0c},
+	{0x3041, 0x00},
+	{0x3042, 0x00},
+	{0x3043, 0x0f},
+	{0x3044, 0x20},
+	{0x3045, 0x00},
+	{0x3046, 0xe0},
+	{0x3047, 0x10},
+#endif
 	{0x3020, 0x01},
 	{0x3021, 0x01},
 	{0x3022, 0x01},
@@ -772,6 +798,48 @@ static const struct imx415_mode supported_modes[] = {
 	 * frame rate = 1 / (Vtt * 1H) = 1 / (VMAX * 1H)
 	 * VMAX >= (PIX_VWIDTH / 2) + 46 = height + 46
 	 */
+
+#ifdef RK3399_DEBUG
+	{
+		.bus_fmt = MEDIA_BUS_FMT_SGBRG10_1X10,
+		.width = 3840,
+		.height = 2160,
+		.max_fps = {
+			.numerator = 10000,
+			.denominator = 300000,
+		},
+		.exp_def = 0x08ca - 0x08,
+		.hts_def = 0x044c * IMX415_4LANES * 2,
+		.vts_def = 0x08ca,
+		.global_reg_list = imx415_global_10bit_3864x2192_regs,
+		.reg_list = imx415_linear_10bit_3864x2192_891M_regs,
+		.hdr_mode = NO_HDR,
+		.mipi_freq_idx = 1,
+		.bpp = 10,
+		.vc[PAD0] = V4L2_MBUS_CSI2_CHANNEL_0,
+	},
+
+	#ifdef RK3399_IMX415_1080P
+	{
+		.bus_fmt = MEDIA_BUS_FMT_SGBRG12_1X12,
+		.width = 1920,
+		.height = 1080,
+		.max_fps = {
+			.numerator = 10000,
+			.denominator = 300000,
+		},
+		.exp_def = 0x0c5d - 0x08,
+		.hts_def = 0x030e * 3,
+		.vts_def = 0x0c5d,
+		.global_reg_list = imx415_global_12bit_3864x2192_regs,
+		.reg_list = imx415_linear_12bit_1932x1096_594M_regs,
+		.hdr_mode = NO_HDR,
+		.mipi_freq_idx = 0,
+		.bpp = 12,
+		.vc[PAD0] = V4L2_MBUS_CSI2_CHANNEL_0,
+	},
+	#endif
+#else
 	{
 		.bus_fmt = MEDIA_BUS_FMT_SGBRG10_1X10,
 		.width = 3864,
@@ -977,6 +1045,7 @@ static const struct imx415_mode supported_modes[] = {
 		.vc[PAD2] = V4L2_MBUS_CSI2_CHANNEL_1,
 		.vc[PAD3] = V4L2_MBUS_CSI2_CHANNEL_1,//M->csi wr2
 	},
+#endif
 };
 
 static const s64 link_freq_items[] = {

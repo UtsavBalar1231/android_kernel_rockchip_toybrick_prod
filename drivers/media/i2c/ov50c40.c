@@ -6895,7 +6895,7 @@ static int ov50c40_initialize_controls(struct ov50c40 *ov50c40)
 				0, 0, ov50c40_test_pattern_menu);
 
 	ov50c40->h_flip = v4l2_ctrl_new_std(handler, &ov50c40_ctrl_ops,
-				V4L2_CID_HFLIP, 0, 1, 1, 0);
+				V4L2_CID_HFLIP, 0, 1, 1, 1);
 
 	ov50c40->v_flip = v4l2_ctrl_new_std(handler, &ov50c40_ctrl_ops,
 				V4L2_CID_VFLIP, 0, 1, 1, 0);
