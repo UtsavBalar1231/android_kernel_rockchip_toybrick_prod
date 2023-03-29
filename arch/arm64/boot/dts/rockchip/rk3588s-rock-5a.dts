@@ -8,7 +8,7 @@
 
 #include "rk3588s-rock-5a-v10.dtsi"
 #include "rk3588s-rock-5a-imx415.dtsi"
-
+#include "rk3588s-rock-5a-display.dtsi"
 
 / {
 	model = "Rockchip RK3588S Radxa Rock 5A Board";
