@@ -217,8 +217,9 @@
 
 &dp0 {
 	status = "okay";
-	pinctrl-0 = <&dp0m1_pins>;
 	pinctrl-names = "default";
+	pinctrl-0 = <&dp0_hpd>;
+	hpd-gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
 };
 
 &dp0_in_vp2 {
@@ -493,6 +494,12 @@
 };
 
 &pinctrl {
+	dp {
+		dp0_hpd: dp0-hpd {
+			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
 	hym8563 {
 		rtc_int: rtc-int {
 			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
@@ -515,14 +522,6 @@
 		};
 
 	};
-
-	usb-typec {
-		usbc0_int: usbc0-int {
-			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>;
-		};
-	};
-
-	
 };
 
 /*fan*/
