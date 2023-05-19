@@ -766,6 +766,10 @@
 	status = "okay";
 };
 
+&vepu {
+       status = "okay";
+};
+
 &vdpu_mmu {
 	status = "okay";
 };
