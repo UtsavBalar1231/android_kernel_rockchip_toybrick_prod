@@ -17,7 +17,7 @@
 #include "dt-bindings/usb/pd.h"
 #include "rk3588s.dtsi"
 #include "rk3588-rk806-single.dtsi"
-#include "rk3588-linux.dtsi"
+#include "rk3588-android.dtsi"
 
 / {
 	compatible = "radxa,cm5", "rockchip,rk3588";
