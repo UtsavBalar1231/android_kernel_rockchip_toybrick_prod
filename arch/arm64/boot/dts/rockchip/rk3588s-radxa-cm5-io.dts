@@ -9,6 +9,7 @@
 
 #include "rk3588s-radxa-cm5.dtsi"
 #include "rk3588s-radxa-cm5-radxa-10inch-display.dtsi"
+#include "rk3588-radxa-cm5-imx415.dtsi"
 
 / {
 	model = "Radxa CM5 IO";
