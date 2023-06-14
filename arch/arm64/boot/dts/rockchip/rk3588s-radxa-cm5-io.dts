@@ -8,6 +8,7 @@
 /dts-v1/;
 
 #include "rk3588s-radxa-cm5.dtsi"
+#include "rk3588s-radxa-cm5-radxa-10inch-display.dtsi"
 
 / {
 	model = "Radxa CM5 IO";
@@ -330,8 +331,6 @@
 
 &hdmi0 {
 	enable-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&hdmim0_tx0_cec &hdmim0_tx0_hpd &hdmim0_tx0_scl &hdmim0_tx0_sda>;
 	status = "okay";
 };
 
