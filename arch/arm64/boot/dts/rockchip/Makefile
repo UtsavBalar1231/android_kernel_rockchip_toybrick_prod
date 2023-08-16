@@ -344,5 +344,5 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-tablet-v11.dtb
 endif
 
 always		:= $(dtb-y)
-subdir-y	:= $(dts-dirs)
-clean-files	:= *.dtb
+subdir-y := $(dts-dirs) overlays
+clean-files	:= *.dtb *.dtbo
