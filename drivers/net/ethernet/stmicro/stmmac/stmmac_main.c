@@ -60,8 +60,8 @@
 #define	STMMAC_ALIGN(x)		ALIGN(ALIGN(x, SMP_CACHE_BYTES), 16)
 #define	TSO_MAX_BUFF_SIZE	(SZ_16K - 1)
 
-#define	RTL8211F_PHY_ID		0x001cc916
-#define	RTL8211F_PHY_ID_MASK	0x001fffff
+#define	RTL8211F_PHY_UID	0x001cc800
+#define	RTL8211F_PHY_UID_MASK	0x001ffc00
 #define	RTL8211F_PAGE_SELECT	0x1f
 #define	RTL8211F_LCR_ADDR	0x10
 #define	RTL8211F_EEELCR_ADDR	0x11
@@ -7413,13 +7413,13 @@ int stmmac_dvr_probe(struct device *device,
 	if (priv->plat->dump_debug_regs)
 		priv->plat->dump_debug_regs(priv->plat->bsp_priv);
 
-	ret = phy_register_fixup_for_uid(RTL8211F_PHY_ID, RTL8211F_PHY_ID_MASK, 
-									 phy_rtl8211f_led_fixup);
+	/* Register fixup for PHY RTL8211F */
+	ret = phy_register_fixup_for_uid(RTL8211F_PHY_UID, RTL8211F_PHY_UID_MASK, phy_rtl8211f_led_fixup);
 	if (ret)
 		dev_warn(priv->device, "Failed to register fixup for PHY RTL8211F.\n");
 
 	/* Register fixup for PHY RTL8211F disabling EEE */
-	ret = phy_register_fixup_for_uid(RTL8211F_PHY_ID, RTL8211F_PHY_ID_MASK, phy_rtl8211f_eee_fixup);
+	ret = phy_register_fixup_for_uid(RTL8211F_PHY_UID, RTL8211F_PHY_UID_MASK, phy_rtl8211f_eee_fixup);
 	if (ret) {
 		dev_warn(priv->device, "Failed to register fixup for PHY RTL8211F disabling EEE.\n");
 	}
