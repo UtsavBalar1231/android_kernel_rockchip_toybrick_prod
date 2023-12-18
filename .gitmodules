@@ -1,0 +1,3 @@
+[submodule "vicharak"]
+	path = vicharak
+	url = https://github.com/UtsavBalar1231/kernel_build_scripts
