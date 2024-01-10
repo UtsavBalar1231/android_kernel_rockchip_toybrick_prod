@@ -207,6 +207,7 @@
 	};
 
 	cif_isp1: cif_isp@ff920000 {
+        	rockchip,camera-modules-attached = <&camera0>;
 		compatible = "rockchip,rk3399-cif-isp";
 		rockchip,grf = <&grf>;
 		reg = <0x0 0xff920000 0x0 0x4000>, <0x0 0xff968000 0x0 0x8000>;
@@ -232,7 +233,7 @@
 		power-domains = <&power RK3399_PD_ISP1>;
 		rockchip,isp,iommu-enable = <1>;
 		iommus = <&isp1_mmu>;
-		status = "disabled";
+		status = "okay";
 	};
 };
 
@@ -511,9 +512,9 @@
 		};
 	};
 
-	vdd_cpu_b: tcs452x@1c {
-		compatible = "tcs,tcs452x";
-		reg = <0x1c>;
+        vdd_cpu_b: syr827@40 {
+		compatible = "silergy,syr827";
+		reg = <0x40>;
 		vin-supply = <&vcc5v0_sys>;
 		regulator-compatible = "fan53555-reg";
 		pinctrl-0 = <&vsel1_gpio>;
@@ -521,7 +522,7 @@
 		regulator-name = "vdd_cpu_b";
 		regulator-min-microvolt = <712500>;
 		regulator-max-microvolt = <1500000>;
-		regulator-ramp-delay = <2300>;
+		regulator-ramp-delay = <1000>;
 		fcs,suspend-voltage-selector = <1>;
 		regulator-always-on;
 		regulator-boot-on;
@@ -531,26 +532,71 @@
 		};
 	};
 
-	vdd_gpu: tcs452x@10 {
-		compatible = "tcs,tcs452x";
-		status = "okay";
-		reg = <0x10>;
-		vin-supply = <&vcc5v0_sys>;
-		regulator-compatible = "fan53555-reg";
-		pinctrl-0 = <&vsel2_gpio>;
-		vsel-gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
-		regulator-name = "vdd_gpu";
-		regulator-min-microvolt = <735000>;
-		regulator-max-microvolt = <1400000>;
-		regulator-ramp-delay = <2300>;
-		fcs,suspend-voltage-selector = <1>;
-		regulator-always-on;
-		regulator-boot-on;
-		regulator-state-mem {
-			regulator-off-in-suspend;
+	vdd_gpu: fan53555@60 {
+	    compatible = "fcs,fan53555";
+	    status = "okay";
+	    reg = <0x60>;
+	    vin-supply = <&vcc5v0_sys>;
+	    regulator-compatible = "fan53555-reg";
+	    pinctrl-0 = <&vsel2_gpio>;
+	    vsel-gpios = <&gpio1 RK_PB6 GPIO_ACTIVE_HIGH>;
+	    regulator-name = "vdd gpu";
+	    regulator-min-microvolt = <735000>;
+	    regulator-max-microvolt = <1400000>;
+	    regulator-ramp-delay = <2300>;
+	    fcs,suspend-voltage-selector = <1>;
+	    regulator-always-on;
+	    regulator-boot-on;
+	    regulator-state-mem {
+                 regulator-off-in-suspend;
+	    };
+	};
+};
+
+&pinctrl {
+	cam_mclk {
+		cam_default_pins: cam-default-pins {
+			rockchip,pins = <2 11 RK_FUNC_3 &pcfg_pull_none>;
 		};
 	};
+};
 
+&i2c1 {
+	status = "okay";
+	i2c-scl-rising-time-ns = <300>;
+	i2c-scl-falling-time-ns = <15>;
+	clock-frequency = <400000>;
+
+        camera0: camera-module@10 {
+		status = "okay";
+		compatible = "omnivision,ov8858_v4l2-i2c-subdev";
+		reg = <0x6c>;
+		device_type = "v4l2-i2c-subdev";
+		clocks = <&cru SCLK_CIF_OUT>;
+		clock-names = "clk_cif_out";
+
+		pinctrl-names = "default";
+		pinctrl-0 = <&cam_default_pins>;
+
+		rockchip,pd-gpio = <&gpio4 RK_PD4 GPIO_ACTIVE_LOW>;
+
+		rockchip,camera-module-mclk-name = "clk_cif_out";
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "MDG001";
+		rockchip,camera-module-len-name = "NONE";
+		rockchip,camera-module-fov-h = "80";
+		rockchip,camera-module-fov-v = "65";
+		rockchip,camera-module-orientation = <0>;
+		rockchip,camera-module-iq-flip = <0>;
+		rockchip,camera-module-iq-mirror = <0>;
+		rockchip,camera-module-flip = <1>;
+		rockchip,camera-module-mirror = <1>;
+
+		rockchip,camera-module-defrect0 = <1280 960 0 0 1280 960>;
+		rockchip,camera-module-flash-support = <0>;
+		rockchip,camera-module-mipi-dphy-index = <0>;
+		as-master = <0>;
+	};
 };
 
 &cpu_l0 {
@@ -608,6 +654,12 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&uart0_xfer &uart0_cts>;
 	status = "okay";
+};
+
+&uart3 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart3_xfer &uart3_cts>;
+        status = "okay";
 };
 
 &vopl {

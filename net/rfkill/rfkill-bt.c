@@ -283,7 +283,7 @@ static int rfkill_rk_set_power(void *data, bool blocked)
     int power = 0, vref_ctrl_enable = 0;
     bool toggle = false;
 
-    DBG("Enter %s\n", __func__);
+    LOG("Enter %s\n", __func__);
 
     DBG("Set blocked:%d\n", blocked);
 
@@ -675,7 +675,10 @@ static int rfkill_rk_probe(struct platform_device *pdev)
     }
     if (gpio_is_valid(pdata->reset_gpio.io))
     {
+        LOG("** BT RESET %d %d\n", pdata->reset_gpio.io, pdata->reset_gpio.enable);
         gpio_direction_output(pdata->reset_gpio.io, !pdata->reset_gpio.enable);
+        msleep(300);
+        gpio_direction_output(pdata->reset_gpio.io, pdata->reset_gpio.enable);
     }
 
 	platform_set_drvdata(pdev, rfkill);

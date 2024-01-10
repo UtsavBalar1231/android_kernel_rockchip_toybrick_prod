@@ -710,7 +710,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
 	}
 
 	if (p->reset_gpio)
-		gpiod_direction_output(p->reset_gpio, 1);
+		gpiod_direction_output(p->reset_gpio, 0);
 
 	if (p->enable_gpio)
 		gpiod_direction_output(p->enable_gpio, 0);
@@ -759,6 +759,15 @@ static int panel_simple_prepare(struct drm_panel *panel)
 
 	if (p->reset_gpio)
 		gpiod_direction_output(p->reset_gpio, 0);
+
+	/* New LCD init sequence */
+	if (p->desc && p->desc->delay.reset)
+		panel_simple_sleep(p->desc->delay.reset);
+
+	if (p->reset_gpio) {
+		dev_err(panel->dev, "[DEBUG_DSI] reset_gpio = 1\n");
+		gpiod_direction_output(p->reset_gpio, 1);
+	}
 
 	if (p->desc && p->desc->delay.init)
 		panel_simple_sleep(p->desc->delay.init);

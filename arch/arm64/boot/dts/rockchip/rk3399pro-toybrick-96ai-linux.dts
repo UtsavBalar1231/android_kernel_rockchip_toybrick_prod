@@ -56,7 +56,7 @@
 };
 
 &route_edp {
-        status = "okay";
+        status = "disabled";
 };
 
 &dp_sound {

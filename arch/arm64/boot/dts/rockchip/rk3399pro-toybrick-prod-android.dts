@@ -43,6 +43,7 @@
 /dts-v1/;
 #include "rk3399pro-toybrick-prod.dtsi"
 #include "rk3399-android.dtsi"
+#include "rk3399pro-toybrick-mipi.dtsi"
 
 / {
 	compatible = "rockchip,rk3399pro-toybrick-prod-android","rockchip,rk3399pro";
@@ -130,10 +131,10 @@
 };
 
 &route_dsi {
-        status = "okay";
+        status = "disabled";
 };
 
 &route_edp {
-        status = "okay";
+        status = "disabled";
 };
 

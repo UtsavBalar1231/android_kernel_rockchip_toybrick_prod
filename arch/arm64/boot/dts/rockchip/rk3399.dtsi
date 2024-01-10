@@ -661,7 +661,7 @@
 		reg-io-width = <4>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&uart0_xfer &uart0_cts &uart0_rts>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	uart1: serial@ff190000 {
@@ -1216,7 +1216,7 @@
 		pinctrl-0 = <&i2c8_xfer>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	pcie_phy: pcie-phy {
@@ -2594,50 +2594,25 @@
 		sdio0 {
 			sdio0_bus1: sdio0-bus1 {
 				rockchip,pins =
-					<2 20 RK_FUNC_1 &pcfg_pull_up>;
+					<2 20 RK_FUNC_1 &pcfg_pull_up_20ma>;
 			};
 
 			sdio0_bus4: sdio0-bus4 {
 				rockchip,pins =
-					<2 20 RK_FUNC_1 &pcfg_pull_up>,
-					<2 21 RK_FUNC_1 &pcfg_pull_up>,
-					<2 22 RK_FUNC_1 &pcfg_pull_up>,
-					<2 23 RK_FUNC_1 &pcfg_pull_up>;
+					<2 20 RK_FUNC_1 &pcfg_pull_up_20ma>,
+					<2 21 RK_FUNC_1 &pcfg_pull_up_20ma>,
+					<2 22 RK_FUNC_1 &pcfg_pull_up_20ma>,
+					<2 23 RK_FUNC_1 &pcfg_pull_up_20ma>;
 			};
 
 			sdio0_cmd: sdio0-cmd {
 				rockchip,pins =
-					<2 24 RK_FUNC_1 &pcfg_pull_up>;
+					<2 24 RK_FUNC_1 &pcfg_pull_up_20ma>;
 			};
 
 			sdio0_clk: sdio0-clk {
 				rockchip,pins =
-					<2 25 RK_FUNC_1 &pcfg_pull_none>;
-			};
-
-			sdio0_cd: sdio0-cd {
-				rockchip,pins =
-					<2 26 RK_FUNC_1 &pcfg_pull_up>;
-			};
-
-			sdio0_pwr: sdio0-pwr {
-				rockchip,pins =
-					<2 27 RK_FUNC_1 &pcfg_pull_up>;
-			};
-
-			sdio0_bkpwr: sdio0-bkpwr {
-				rockchip,pins =
-					<2 28 RK_FUNC_1 &pcfg_pull_up>;
-			};
-
-			sdio0_wp: sdio0-wp {
-				rockchip,pins =
-					<0 3 RK_FUNC_1 &pcfg_pull_up>;
-			};
-
-			sdio0_int: sdio0-int {
-				rockchip,pins =
-					<0 4 RK_FUNC_1 &pcfg_pull_up>;
+					<2 25 RK_FUNC_1 &pcfg_pull_none_20ma>;
 			};
 		};
 

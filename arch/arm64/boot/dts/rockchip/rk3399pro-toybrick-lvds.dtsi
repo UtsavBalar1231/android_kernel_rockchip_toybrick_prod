@@ -47,7 +47,7 @@
 &dsi {
 	reset-gpios = <&gpio4 RK_PD5 GPIO_ACTIVE_LOW>;	/* TC358775_RST */
 	enable-gpios = <&gpio4 RK_PD6 GPIO_ACTIVE_HIGH>; /* STBY */
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "default";
 	pinctrl-0 = <&lvds_pwren_h>;
 	//pinctrl-0 = <&lcd_bl_en_h>;

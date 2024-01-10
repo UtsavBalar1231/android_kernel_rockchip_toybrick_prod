@@ -7801,12 +7801,8 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 
 	/* set default firmware and nvram path for built-in type driver */
 	if (!dhd_download_fw_on_driverload) {
-#ifdef CONFIG_BCMDHD_FW_PATH
-		fw = CONFIG_BCMDHD_FW_PATH;
-#endif /* CONFIG_BCMDHD_FW_PATH */
-#ifdef CONFIG_BCMDHD_NVRAM_PATH
-		nv = CONFIG_BCMDHD_NVRAM_PATH;
-#endif /* CONFIG_BCMDHD_NVRAM_PATH */
+		fw = "/vendor/etc/firmware/fw_bcm43438a1.bin";
+		nv = "/vendor/etc/firmware/nvram.txt";
 	}
 
 	/* check if we need to initialize the path */
