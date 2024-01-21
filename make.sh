@@ -1,7 +1,7 @@
 #!/bin/bash
 
 JOB=`sed -n "N;/processor/p" /proc/cpuinfo|wc -l`
-DTB=toybrick-$2
+DTB=amolk
 
 function help()
 {
