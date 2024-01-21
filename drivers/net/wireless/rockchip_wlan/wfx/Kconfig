@@ -1,0 +1,11 @@
+config WFX
+	tristate "Silicon Laboratories WFx Wi-Fi"
+	---help---
+	  Say Y to enable Silicon Laboratories WFx Wi-Fi
+
+config WFX_SECURE_LINK
+	boolean "Enable secure link with Silicon Laboratories WFx Wi-Fi"
+	depends on WFX
+	default n
+	---help---
+	  Enable secure link with Silicon Laboratories WFx Wi-Fi

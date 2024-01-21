@@ -78,6 +78,7 @@ enum {
     WIFI_ESP8089,
     WIFI_MVL88W8977,
     WIFI_SSV6051,
+	WIFI_WF200,
     TYPE_MAX,
 };
 
