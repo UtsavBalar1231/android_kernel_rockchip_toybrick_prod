@@ -1,0 +1,55 @@
+/dts-v1/;
+#include "rk3399pro-amolk.dtsi"
+#include "rk3399-linux.dtsi"
+
+/ {
+	compatible = "rockchip,rk3399pro-amolk",
+				 "rockchip,rk3399pro-amolk-linux",
+				 "rockchip,rk3399pro";
+	model = "Rockchip RK3399Pro Board (Linux)";
+};
+
+&hdmi {
+	#sound-dai-cells = <0>;
+	rockchip,phy-table =
+		<74250000  0x8009 0x0004 0x0272>,
+		<165000000 0x802b 0x0004 0x0209>,
+		<297000000 0x8039 0x0005 0x028d>,
+		<594000000 0x8039 0x0000 0x00f6>,
+		<000000000 0x0000 0x0000 0x0000>;
+	status = "okay";
+};
+
+&display_subsystem {
+	status = "okay";
+};
+
+&hdmi_in_vopl {
+	status = "disabled";
+};
+
+&hdmi_in_vopb {
+	status = "okay";
+};
+
+&route_hdmi {
+	status = "okay";
+	connect = <&hdmi_in_vopb>;
+};
+
+&dsi_in_vopb {
+	status = "disabled";
+};
+
+&dsi_in_vopl {
+	status = "okay";
+};
+
+&route_dsi {
+	status = "okay";
+	connect = <&dsi_in_vopl>;
+};
+
+&route_edp {
+	status = "disabled";
+};
