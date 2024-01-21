@@ -112,6 +112,11 @@ if (chip == WIFI_AP6330) {
     sprintf(fw, "%s%s", ANDROID_FW_PATH, "fw_RK903_ag.bin");
 	sprintf(nvram, "%s%s", ANDROID_FW_PATH, "nvram_GB86302I.txt");
 #endif
+
+	if (chip == WIFI_WF200) {
+		sprintf(fw, "%s%s", ANDROID_FW_PATH, "wfm_wf200.sec");
+	}
+
 	return 0;
 }
 
