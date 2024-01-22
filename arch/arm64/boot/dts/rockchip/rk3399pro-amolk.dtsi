@@ -58,16 +58,6 @@
 		enable-gpios = <&gpio4 RK_PD4 GPIO_ACTIVE_HIGH>;
 	};
 
-	gt1x: gt1x@14 {
-		status = "okay";
-		compatible = "goodix,gt1x";
-		pinctrl-names = "default";
-		pinctrl-0 = <&mipi_touch_int>;
-		reg = <0x14>;
-		goodix,rst-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
-		goodix,irq-gpio = <&gpio4 RK_PD0 IRQ_TYPE_LEVEL_LOW>;
-	};
-
 	sdio_pwrseq: sdio-pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		clocks = <&rk809 1>;
@@ -669,6 +659,24 @@
 
 &i2c4 {
 	status = "okay";
+
+	gt1x: gt1x@14 {
+		compatible = "goodix,gt1x";
+		reg = <0x14>;
+		goodix,rst-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
+		goodix,irq-gpio = <&gpio4 RK_PD0 IRQ_TYPE_LEVEL_LOW>;
+	};
+
+	gt9xx: gt9xx@14 {
+		compatible = "goodix,gt9xx";
+		reg = <0x14>;
+		touch-gpio = <&gpio4 RK_PD0 IRQ_TYPE_LEVEL_LOW>;
+		reset-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
+		max-x = <1024>;
+		max-y = <600>;
+		tp-size = <910>;
+		tp-supply = <&vcc3v3_sys>;
+	};
 };
 
 &i2c8 {
