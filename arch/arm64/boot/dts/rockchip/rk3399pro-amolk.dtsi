@@ -649,9 +649,9 @@
 		};
 	};
 
-	vdd_cpu_b: tcs452x@1c {
-		compatible = "tcs,tcs452x";
-		reg = <0x1c>;
+	vdd_cpu_b: syr837@40 {
+		compatible = "silergy,syr827";
+		reg = <0x40>;
 		vin-supply = <&vcc5v0_sys>;
 		regulator-compatible = "fan53555-reg";
 		pinctrl-0 = <&vsel1_gpio>;
@@ -659,7 +659,7 @@
 		regulator-name = "vdd_cpu_b";
 		regulator-min-microvolt = <712500>;
 		regulator-max-microvolt = <1500000>;
-		regulator-ramp-delay = <2300>;
+		regulator-ramp-delay = <1000>;
 		fcs,suspend-voltage-selector = <1>;
 		regulator-always-on;
 		regulator-boot-on;
@@ -680,11 +680,10 @@
 		regulator-name = "vdd_gpu";
 		regulator-min-microvolt = <735000>;
 		regulator-max-microvolt = <1400000>;
-		regulator-ramp-delay = <2300>;
+		regulator-ramp-delay = <1000>;
 		fcs,suspend-voltage-selector = <1>;
 		regulator-always-on;
 		regulator-boot-on;
-		regulator-initial-state = <3>;
 		regulator-state-mem {
 			regulator-off-in-suspend;
 		};
