@@ -174,6 +174,7 @@ fail3:
 fail2:
     gpio_free(irq->gpio.io);
 fail1:
+	LOG("ERROR: Failed to setup bt wake host irq.\n");
     return ret;
 }
 
