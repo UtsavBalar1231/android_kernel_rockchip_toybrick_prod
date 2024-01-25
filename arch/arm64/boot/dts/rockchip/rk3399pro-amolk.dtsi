@@ -356,7 +356,7 @@
 		updn-gpios = <&gpio3 RK_PD0 GPIO_ACTIVE_HIGH>;
 		shlr-gpios = <&gpio3 RK_PD7 GPIO_ACTIVE_HIGH>;
 		standby-gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
-		vcc-lcd-supply = <&vcc3v3_sys>;
+		vcc-lcd-supply = <&vcc5v0_sys>;
 		status = "okay";
 	};
 };
