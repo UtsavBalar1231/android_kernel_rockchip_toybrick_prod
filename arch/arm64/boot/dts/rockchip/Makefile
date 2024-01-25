@@ -114,6 +114,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-evb-v11.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-evb-v11-linux.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-npu-evb-v10.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-amolk-android.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-amolk-linux.dtb
 
 always		:= $(dtb-y)
 subdir-y	:= $(dts-dirs)
