@@ -707,13 +707,6 @@
 &i2c4 {
 	status = "okay";
 
-	gt1x: gt1x@14 {
-		compatible = "goodix,gt1x";
-		reg = <0x14>;
-		goodix,rst-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
-		goodix,irq-gpio = <&gpio4 RK_PD0 IRQ_TYPE_LEVEL_LOW>;
-	};
-
 	gt9xx: gt9xx@14 {
 		compatible = "goodix,gt9xx";
 		reg = <0x14>;
