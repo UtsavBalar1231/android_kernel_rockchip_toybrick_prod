@@ -925,11 +925,15 @@
 };
 
 &vopb {
+	rockchip,grf = <&grf>;
+
 	assigned-clocks = <&cru DCLK_VOP0_DIV>;
 	assigned-clock-parents = <&cru PLL_CPLL>;
 };
 
 &vopl {
+	rockchip,grf = <&grf>;
+
 	assigned-clocks = <&cru DCLK_VOP1_DIV>;
 	assigned-clock-parents = <&cru PLL_VPLL>;
 };
