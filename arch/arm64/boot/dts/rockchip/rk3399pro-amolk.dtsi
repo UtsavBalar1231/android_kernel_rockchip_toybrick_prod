@@ -815,10 +815,10 @@
 
 &sdio0 {
 	mmc-pwrseq = <&sdio_pwrseq>;
-	#address-size = <1>;
-	#size = <0>;
+	#address-cells = <1>;
+	#size-cells = <0>;
 
-	mmc@1 {
+	wf200: wifi@1 {
 		compatible = "silabs,wf200";
 		reg = <1>;
 		pinctrl-names = "default";
