@@ -4918,7 +4918,7 @@ static void __exit kbase_driver_exit(void)
 #endif
 }
 
-module_init(kbase_driver_init);
+late_initcall(kbase_driver_init);
 module_exit(kbase_driver_exit);
 
 #endif /* CONFIG_OF */
