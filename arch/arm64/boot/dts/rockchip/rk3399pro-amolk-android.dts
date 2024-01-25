@@ -64,7 +64,3 @@
 &route_edp {
 	status = "disabled";
 };
-
-&rk_key {
-	status = "disabled";
-};
