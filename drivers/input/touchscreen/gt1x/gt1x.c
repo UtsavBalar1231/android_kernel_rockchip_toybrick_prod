@@ -399,7 +399,7 @@ static s32 gt1x_request_io_port(void)
 	GTP_DEBUG_FUNC();
 	ret = gpio_request(GTP_INT_PORT, "GTP_INT_IRQ");
 	if (ret < 0) {
-		GTP_ERROR("Failed to request GPIO:%d, ERRNO:%d", (s32) GTP_INT_PORT, ret);
+		GTP_ERROR("Failed to request Int GPIO:%d, ERRNO:%d", (s32) GTP_INT_PORT, ret);
 		return ret;
 	}
 
@@ -408,7 +408,7 @@ static s32 gt1x_request_io_port(void)
 
 	ret = gpio_request(GTP_RST_PORT, "GTP_RST_PORT");
 	if (ret < 0) {
-		GTP_ERROR("Failed to request GPIO:%d, ERRNO:%d", (s32) GTP_RST_PORT, ret);
+		GTP_ERROR("Failed to request Rst GPIO:%d, ERRNO:%d", (s32) GTP_RST_PORT, ret);
 		gpio_free(GTP_INT_PORT);
 		return ret;
 	}
