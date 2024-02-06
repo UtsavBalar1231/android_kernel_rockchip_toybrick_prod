@@ -80,6 +80,14 @@
 		regulator-max-microvolt = <5000000>;
 	};
 
+	vcc5v0_host: vcc5v0-host-regulator {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		regulator-name = "vcc5v0_host";
+		regulator-always-on;
+		vin-supply = <&vcc5v0_usb>;
+	};
+
 	vdd_log: vdd_log {
 		compatible = "regulator-fixed";
 		regulator-name = "vdd_log";
@@ -866,7 +874,7 @@
 	};
 
 	u2phy0_host: host-port {
-		phy-supply = <&vcc5v0_usb>;
+		phy-supply = <&vcc5v0_host>;
 		status = "okay";
 	};
 };
@@ -879,7 +887,7 @@
 	};
 
 	u2phy1_host: host-port {
-		phy-supply = <&vcc5v0_usb>;
+		phy-supply = <&vcc5v0_host>;
 		status = "okay";
 	};
 };
