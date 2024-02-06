@@ -52,7 +52,7 @@ static int gd3385a_panel_prepare(struct drm_panel *panel)
 
 	ret = regulator_enable(ctx->supply);
 	if (ret < 0) {
-		DRM_DEV_ERROR(&ctx->dsi->dev, "Failed to enable supply: %d\n", ret);
+		DRM_DEV_ERROR(&ctx->dsi->dev, "Failed to enable supply regulator: %d\n", ret);
 		return ret;
 	}
 
@@ -81,17 +81,21 @@ static int gd3385a_panel_enable(struct drm_panel *panel)
 	int ret;
 
 	ret = mipi_dsi_dcs_exit_sleep_mode(ctx->dsi);
-	if (ret)
+	if (ret) {
+		DRM_DEV_ERROR(&ctx->dsi->dev, "Failed to exit sleep mode: %d\n", ret);
 		return ret;
+	}
 
 	// Standby mode off
 	gpiod_set_value(ctx->gpios.standby, 0);
 	// Wait a little for the panel to be ready
-	msleep(100);
+	usleep_range(10000, 11000);
 
 	ret = backlight_enable(ctx->backlight);
-	if (ret)
+	if (ret) {
+		DRM_DEV_ERROR(&ctx->dsi->dev, "Failed to enable backlight: %d\n", ret);
 		goto out;
+	}
 
 	return 0;
 
@@ -178,7 +182,7 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 
 	ctx->supply = devm_regulator_get(&dsi->dev, "vcc-lcd");
 	if (IS_ERR(ctx->supply)) {
-		DRM_DEV_ERROR(&dsi->dev, "Couldn't get our supply\n");
+		DRM_DEV_ERROR(&dsi->dev, "Couldn't get LCD power supply\n");
 		return PTR_ERR(ctx->supply);
 	}
 
@@ -197,7 +201,7 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 
 	ctx->gpios.power = devm_gpiod_get(&dsi->dev, "power", GPIOD_OUT_LOW);
 	if (IS_ERR(ctx->gpios.power)) {
-		DRM_DEV_ERROR(&dsi->dev, "Couldn't get our power GPIO\n");
+		DRM_DEV_ERROR(&dsi->dev, "Couldn't get power GPIO\n");
 		return PTR_ERR(ctx->gpios.power);
 	}
 
@@ -207,7 +211,7 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 	 */
 	ctx->gpios.updn = devm_gpiod_get(&dsi->dev, "updn", GPIOD_OUT_LOW);
 	if (IS_ERR(ctx->gpios.updn)) {
-		DRM_DEV_ERROR(&dsi->dev, "Couldn't get our updn GPIO\n");
+		DRM_DEV_ERROR(&dsi->dev, "Couldn't get updn GPIO\n");
 		return PTR_ERR(ctx->gpios.updn);
 	}
 
@@ -217,13 +221,13 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 	 */
 	ctx->gpios.shlr = devm_gpiod_get(&dsi->dev, "shlr", GPIOD_OUT_LOW);
 	if (IS_ERR(ctx->gpios.shlr)) {
-		DRM_DEV_ERROR(&dsi->dev, "Couldn't get our shlr GPIO\n");
+		DRM_DEV_ERROR(&dsi->dev, "Couldn't get shlr GPIO\n");
 		return PTR_ERR(ctx->gpios.shlr);
 	}
 
 	ctx->gpios.standby = devm_gpiod_get(&dsi->dev, "standby", GPIOD_OUT_LOW);
 	if (IS_ERR(ctx->gpios.standby)) {
-		DRM_DEV_ERROR(&dsi->dev, "Couldn't get our standby GPIO\n");
+		DRM_DEV_ERROR(&dsi->dev, "Couldn't get standby GPIO\n");
 		return PTR_ERR(ctx->gpios.standby);
 	}
 
@@ -235,10 +239,9 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 	ctx->backlight = of_find_backlight_by_node(bl_node);
 	of_node_put(bl_node);
 	if (!ctx->backlight) {
-		DRM_DEV_ERROR(&dsi->dev, "Couldn't get our backlight\n");
+		DRM_DEV_ERROR(&dsi->dev, "Couldn't get backlight\n");
 		return -EPROBE_DEFER;
 	}
-	DRM_DEV_INFO(&dsi->dev, "Enabled backlight");
 
 	ret = drm_panel_add(&ctx->panel);
 	if (ret < 0) {
@@ -250,7 +253,6 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 	dsi->format = MIPI_DSI_FMT_RGB888;
 	dsi->lanes = 4;
 
-
 	ret = mipi_dsi_attach(dsi);
 	if (ret < 0) {
 		DRM_DEV_ERROR(&dsi->dev, "Failed to attach to DSI: %d\n", ret);
@@ -258,7 +260,7 @@ static int gd3385a_panel_dsi_probe(struct mipi_dsi_device *dsi)
 		return ret;
 	}
 
-	DRM_DEV_INFO(&dsi->dev, "Added panel\n");
+	DRM_DEV_INFO(&dsi->dev, "Panel probed successfully\n");
 	return 0;
 }
 
