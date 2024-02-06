@@ -19,7 +19,10 @@
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
+		power-supply = <&vcc5v0_sys>;
 		pwms = <&pwm0 0 25000 0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&lcd_bl_en_h>;
 		brightness-levels = <
 			  0  20  20  21  21  22  22  23
 			 23  24  24  25  25  26  26  27
@@ -707,15 +710,16 @@
 &i2c4 {
 	status = "okay";
 
-	gt9xx: gt9xx@14 {
-		compatible = "goodix,gt9xx";
+	gt1x: gt1x@14 {
 		reg = <0x14>;
-		touch-gpio = <&gpio4 RK_PD0 IRQ_TYPE_LEVEL_LOW>;
-		reset-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
-		max-x = <1024>;
-		max-y = <600>;
-		tp-size = <910>;
-		tp-supply = <&vcc3v3_sys>;
+		compatible = "goodix,gt1x";
+		power-supply = <&vcc3v3_sys>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&mipi_touch_int>;
+		goodix,rst-gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
+		goodix,irq-gpio = <&gpio4 RK_PD0 IRQ_TYPE_LEVEL_LOW>;
+		//goodix,enable-gpio = <&gpio4 RK_PD5 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	};
 };
 
@@ -767,6 +771,10 @@
 	audio-supply = <&vcca_1v8>; /* APIO5_VDD */
 	sdmmc-supply = <&vccio_sd>; /* SDMMC0_VDD */
 	gpio1830-supply = <&vcc_3v0>; /* APIO4_VDD */
+};
+
+&pmu_pvtm {
+	status = "okay";
 };
 
 &pmu_io_domains {
@@ -895,6 +903,7 @@
 &usb_host1_ehci {
 	status = "okay";
 };
+
 &usb_host0_ohci {
 	status = "okay";
 };
@@ -909,18 +918,16 @@
 };
 
 &usbdrd_dwc3_0 {
-	snps,dis-u3-autosuspend-quirk;
-	dr_mode = "otg";
-	//snps,tx-fifo-resize;
+	dr_mode = "host";
 	status = "okay";
 };
 
 &usbdrd3_1 {
+	dr_mode = "host";
 	status = "okay";
 };
 
 &usbdrd_dwc3_1 {
-	snps,dis-u3-autosuspend-quirk;
 	status = "okay";
 };
 
@@ -992,7 +999,7 @@
 		mipi_touch_int: mipi-touch-int {
 			rockchip,pins =
 				<4 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>,
-				<4 RK_PD5 RK_FUNC_GPIO &pcfg_output_high>;
+				<4 RK_PC6 RK_FUNC_GPIO &pcfg_output_high>;
 		};
 	};
 
