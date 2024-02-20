@@ -97,13 +97,6 @@
 		regulator-max-microvolt = <900000>;
 	};
 
-	clkin_gmac: external-gmac-clock {
-		compatible = "fixed-clock";
-		clock-frequency = <125000000>;
-		clock-output-names = "clkin_gmac";
-		#clock-cells = <0>;
-	};
-
 	rk809-sound {
 		status = "okay";
 		compatible = "simple-audio-card";
