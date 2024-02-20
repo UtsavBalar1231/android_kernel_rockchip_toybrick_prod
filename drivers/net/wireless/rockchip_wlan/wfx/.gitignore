@@ -25,5 +25,3 @@ Module.symvers
 *.orig
 *~
 \#*#
-
-wfx_version.h
