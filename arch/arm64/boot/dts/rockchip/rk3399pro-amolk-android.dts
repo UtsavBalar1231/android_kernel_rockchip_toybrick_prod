@@ -7,7 +7,7 @@
 	model = "Rockchip RK3399Pro Android board";
 
 	chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xff1a0000 earlyprintk loglevel=7 swiotlb=1 console=ttyFIQ0 androidboot.baseband=N/A androidboot.veritymode=enforcing androidboot.hardware=rk30board androidboot.console=ttyFIQ0 init=/init initrd=0x62000001,0x00800000 coherent_pool=1m";
+		bootargs = "earlycon=uart8250,mmio32,0xff1a0000 earlyprintk loglevel=7 swiotlb=1 console=ttyFIQ0 androidboot.baseband=N/A androidboot.veritymode=enforcing androidboot.hardware=rk30board androidboot.console=ttyFIQ0 init=/init initrd=0x62000000,0x00800000 coherent_pool=1m";
 	};
 };
 
@@ -28,7 +28,7 @@
 			dev = "/dev/block/by-name/system";
 			type = "ext4";
 			mnt_flags = "ro,barrier=1,inode_readahead_blks=8";
-			fsmgr_flags = "wait,verify";
+			fsmgr_flags = "wait";
 		};
 
 		vendor {
@@ -36,7 +36,7 @@
 			dev = "/dev/block/by-name/vendor";
 			type = "ext4";
 			mnt_flags = "ro,barrier=1,inode_readahead_blks=8";
-			fsmgr_flags = "wait,verify";
+			fsmgr_flags = "wait";
 		};
 	};
 };
