@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 
-#include <dt-bindings/soc/rockchip-io-domain.h>
 #include <dt-bindings/pwm/pwm.h>
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/pinctrl/rockchip.h>
@@ -766,8 +765,6 @@
 &io_domains {
 	status = "okay";
 
-	uboot-set = <(RK3399_BT656_VDD_1V8 | RK3399_AUDIO_VDD_1V8 |
-				RK3399_GPIO1833_VDD_3V3)>;
 	bt656-supply = <&vcca_1v8>; /* APIO2_VDD */
 	audio-supply = <&vcca_1v8>; /* APIO5_VDD */
 	sdmmc-supply = <&vccio_sd>; /* SDMMC0_VDD */
@@ -779,7 +776,6 @@
 };
 
 &pmu_io_domains {
-	uboot-set = <RK3399_PMU1830_VDD_1V8>;
 	status = "okay";
 	pmu1830-supply = <&vcc_1v8>;
 };
