@@ -238,6 +238,7 @@ static int wfx_sdio_probe(struct sdio_func *func, const struct sdio_device_id *i
 			dev_warn(&func->dev, "no compatible device found in DT\n");
 			return -ENODEV;
 		}
+		dev_info(&func->dev, "Found device in DT: %s\n", pdata->file_fw);
 		bus->of_irq = irq_of_parse_and_map(np, 0);
 	} else {
 		dev_warn(&func->dev, "device is not declared in DT, features will be limited\n");
@@ -257,18 +258,23 @@ static int wfx_sdio_probe(struct sdio_func *func, const struct sdio_device_id *i
 	/* Block of 64 bytes is more efficient than 512B for frame sizes < 4k */
 	sdio_set_block_size(func, 64);
 	sdio_release_host(func);
-	if (ret)
+	if (ret) {
+		dev_err(&func->dev, "failed to enable SDIO function: %d\n", ret);
 		return ret;
+	}
 
 	bus->core = wfx_init_common(&func->dev, pdata, &wfx_sdio_hwbus_ops, bus);
 	if (!bus->core) {
 		ret = -EIO;
+		dev_err(&func->dev, "failed to initialize WFX core: %d\n", ret);
 		goto sdio_release;
 	}
 
 	ret = wfx_probe(bus->core);
-	if (ret)
+	if (ret) {
+		dev_err(&func->dev, "failed to probe WFX core: %d\n", ret);
 		goto sdio_release;
+	}
 
 	return 0;
 

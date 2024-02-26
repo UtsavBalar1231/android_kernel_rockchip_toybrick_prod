@@ -1025,8 +1025,10 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
 	panel->base.funcs = &panel_simple_funcs;
 
 	err = drm_panel_add(&panel->base);
-	if (err < 0)
+	if (err < 0) {
+		dev_err(dev, "failed to add panel: %d\n", err);
 		goto free_ddc;
+	}
 
 	dev_set_drvdata(dev, panel);
 
@@ -2502,8 +2504,10 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
 	u32 val;
 
 	id = of_match_node(dsi_of_match, dsi->dev.of_node);
-	if (!id)
+	if (!id) {
+		dev_err(&dsi->dev, "no match found for panel\n");
 		return -ENODEV;
+	}
 
 	desc = id->data;
 
@@ -2517,8 +2521,10 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
 	}
 
 	err = panel_simple_probe(&dsi->dev, pdesc);
-	if (err < 0)
+	if (err < 0) {
+		dev_err(&dsi->dev, "failed to probe panel: %d\n", err);
 		return err;
+	}
 
 	panel = dev_get_drvdata(&dsi->dev);
 	panel->dsi = dsi;
@@ -2573,13 +2579,17 @@ static int __init panel_simple_init(void)
 	int err;
 
 	err = platform_driver_register(&panel_simple_platform_driver);
-	if (err < 0)
+	if (err < 0) {
+		pr_err("failed to register panel driver: %d\n", err);
 		return err;
+	}
 
 	if (IS_ENABLED(CONFIG_DRM_MIPI_DSI)) {
 		err = mipi_dsi_driver_register(&panel_simple_dsi_driver);
-		if (err < 0)
+		if (err < 0) {
+			pr_err("failed to register DSI driver: %d\n", err);
 			return err;
+		}
 	}
 
 	return 0;

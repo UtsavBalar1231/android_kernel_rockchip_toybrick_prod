@@ -127,6 +127,7 @@ static int get_firmware(struct wfx_dev *wdev, u32 keyset_chip,
 			return ret;
 		}
 	}
+	dev_info(wdev->dev, "loaded %s\n", filename);
 
 	data = (*fw)->data;
 	if (memcmp(data, "KEYSET", 6) != 0) {
@@ -151,6 +152,8 @@ static int get_firmware(struct wfx_dev *wdev, u32 keyset_chip,
 		return -ENODEV;
 	}
 	wdev->keyset = keyset_file;
+
+	dev_info(wdev->dev, "firmware keyset: 0x%02X\n", keyset_file);
 	return 0;
 }
 
@@ -215,6 +218,8 @@ static int upload_firmware(struct wfx_dev *wdev, const u8 *data, size_t len)
 		if (ret < 0)
 			return ret;
 	}
+
+	dev_info(wdev->dev, "firmware uploaded\n");
 	return 0;
 }
 
@@ -365,12 +370,16 @@ int wfx_init_device(struct wfx_dev *wdev)
 	}
 
 	ret = init_gpr(wdev);
-	if (ret < 0)
+	if (ret < 0) {
+		dev_err(wdev->dev, "failed to initialize GPR\n");
 		return ret;
+	}
 
 	ret = wfx_control_reg_write(wdev, CTRL_WLAN_WAKEUP);
-	if (ret < 0)
+	if (ret < 0) {
+		dev_err(wdev->dev, "chip didn't wake up. Chip wasn't reset?\n");
 		return -EIO;
+	}
 	start = ktime_get();
 	for (;;) {
 		ret = wfx_control_reg_read(wdev, &reg);
@@ -385,11 +394,15 @@ int wfx_init_device(struct wfx_dev *wdev)
 	dev_dbg(wdev->dev, "chip wake up after %lldus\n", ktime_us_delta(now, start));
 
 	ret = wfx_config_reg_write_bits(wdev, CFG_CPU_RESET, 0);
-	if (ret < 0)
+	if (ret < 0) {
+		dev_err(wdev->dev, "bus returned an error during second write access. Host configuration error?\n");
 		return ret;
+	}
 	ret = load_firmware_secure(wdev);
-	if (ret < 0)
+	if (ret < 0) {
+		dev_err(wdev->dev, "failed to load firmware secure\n");
 		return ret;
+	}
 	return wfx_config_reg_write_bits(wdev,
 					 CFG_DIRECT_ACCESS_MODE |
 					 CFG_IRQ_ENABLE_DATA |

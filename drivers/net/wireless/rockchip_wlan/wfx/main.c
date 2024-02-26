@@ -418,8 +418,10 @@ int wfx_probe(struct wfx_dev *wdev)
 	wfx_bh_register(wdev);
 
 	err = wfx_init_device(wdev);
-	if (err)
+	if (err) {
+		dev_err(wdev->dev, "failed to initialize device\n");
 		goto bh_unregister;
+	}
 
 	wfx_bh_poll_irq(wdev);
 	err = wait_for_completion_timeout(&wdev->firmware_ready, 1 * HZ);
@@ -564,6 +566,12 @@ static int __init wfx_core_init(void)
 		ret = spi_register_driver(&wfx_spi_driver);
 	if (IS_ENABLED(CONFIG_MMC) && !ret)
 		ret = sdio_register_driver(&wfx_sdio_driver);
+
+	if (!ret)
+		pr_err("wfx: Silicon Labs " WFX_LABEL " initialization failed\n");
+	else
+		pr_err("wfx: Silicon Labs " WFX_LABEL " initialization succeeded\n");
+
 	return ret;
 }
 module_init(wfx_core_init);
