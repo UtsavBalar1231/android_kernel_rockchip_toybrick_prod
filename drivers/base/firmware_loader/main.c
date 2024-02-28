@@ -470,8 +470,14 @@ static int fw_decompress_xz(struct device *dev, struct fw_priv *fw_priv,
 static char fw_path_para[256];
 static const char * const fw_path[] = {
 	fw_path_para,
+	"/vendor/etc/firmware",
+	"/system/etc/firmware",
+	"/vendor/etc/firmware/wfx",
+	"/system/etc/firmware/wfx",
 	"/lib/firmware/updates/" UTS_RELEASE,
 	"/lib/firmware/updates",
+	"/lib/firmware/wfx" UTS_RELEASE,
+	"/lib/firmware/wfx",
 	"/lib/firmware/" UTS_RELEASE,
 	"/lib/firmware"
 };
