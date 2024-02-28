@@ -7,14 +7,9 @@
 	model = "Rockchip RK3399Pro Board";
 };
 
-&i2c3 {
-	status = "okay";
-};
-
 &hdmi {
 	status = "okay";
 	#sound-dai-cells = <0>;
-	ddc-i2c-bus = <&i2c3>;
 	rockchip,phy-table =
 		<74250000  0x8009 0x0004 0x0272>,
 		<165000000 0x802b 0x0004 0x0209>,

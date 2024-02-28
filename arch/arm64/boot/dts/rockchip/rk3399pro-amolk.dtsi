@@ -256,7 +256,7 @@
 
 &cdn_dp {
 	status = "disabled";
-	extcon = <&fusb0>;
+	// extcon = <&fusb0>;
 	phys = <&tcphy0_dp>;
 };
 
@@ -801,16 +801,6 @@
 	};
 };
 
-&i2c1 {
-};
-
-&i2c2 {
-};
-
-&i2c3 {
-	status = "okay";
-};
-
 &i2c4 {
 	status = "okay";
 
@@ -840,7 +830,7 @@
 		pinctrl-0 = <&fusb0_int>;
 		int-n-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
 		vbus-5v-gpios = <&gpio0 RK_PA1 GPIO_ACTIVE_LOW>;
-		status = "okay";
+		status = "disabled";
 	};
 };
 
@@ -927,15 +917,17 @@
 
 &sdio0 {
 	mmc-pwrseq = <&sdio_pwrseq>;
+	max-frequency = <50000000>;
 	#address-cells = <1>;
 	#size-cells = <0>;
 
-	wf200: wifi@1 {
-		compatible = "silabs,wfx-sdio";
+	wf200: mmc@1 {
+		compatible = "silabs,wf200";
 		reg = <1>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&bt_wake_pin>;
 		wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
+		config-file = "wf200.pds";
 	};
 };
 
@@ -947,7 +939,7 @@
 };
 
 &tcphy0 {
-	extcon = <&fusb0>;
+	// extcon = <&fusb0>;
 	status = "okay";
 };
 
@@ -963,7 +955,7 @@
 
 &u2phy0 {
 	status = "okay";
-	extcon = <&fusb0>;
+	// extcon = <&fusb0>;
 
 	u2phy0_otg: otg-port {
 		status = "okay";
@@ -977,7 +969,7 @@
 
 &u2phy1 {
 	status = "okay";
-	extcon = <&fusb0>;
+	// extcon = <&fusb0>;
 
 	u2phy1_otg: otg-port {
 		status = "okay";
@@ -990,14 +982,10 @@
 };
 
 &uart0 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart0_xfer &uart0_cts>;
 	status = "okay";
 };
 
 &uart3 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&uart3_xfer &uart3_cts>;
 	status = "okay";
 };
 
@@ -1018,12 +1006,13 @@
 };
 
 &usbdrd3_0 {
-	extcon = <&fusb0>;
+	// extcon = <&fusb0>;
 	status = "okay";
 };
 
 &usbdrd_dwc3_0 {
 	status = "okay";
+	dr_mode = "host";
 };
 
 &usbdrd3_1 {
