@@ -1983,6 +1983,10 @@ static const struct usb_device_id option_ids[] = {
 	  .driver_info = RSVD(4) | RSVD(5) },
 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
 	  .driver_info = RSVD(6) },
+	{ USB_DEVICE(0x19d2, 0x0199) },
+	{ USB_DEVICE(0x19d2, 0x1476) },
+	{ USB_DEVICE(0x305a, 0x1406) }, //GM500/GM551A/GM552A
+	{ USB_DEVICE(0x305a, 0x1415) }, //GM510
 	{ } /* Terminating entry */
 };
 MODULE_DEVICE_TABLE(usb, option_ids);
@@ -2058,6 +2062,97 @@ static int option_probe(struct usb_serial *serial,
 	if (dev_desc->idVendor == cpu_to_le16(0x1286) &&
 	    dev_desc->idProduct == cpu_to_le16(0x4e3c) &&
 	    iface_desc->bInterfaceNumber <= 1)
+		return -ENODEV;
+
+	pr_err("DEBUG: idVendor=%x, idProduct=%x, bInterfaceNumber=%d\n",
+	       serial->dev->descriptor.idVendor,
+	       serial->dev->descriptor.idProduct,
+	       serial->interface->cur_altsetting->desc.bInterfaceNumber);
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x1476 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x1476 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x1476 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x0199 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x0199 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 1)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x1476 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x1476 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x0199 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x19d2 &&
+	    serial->dev->descriptor.idProduct == 0x0199 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 1)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
+		return -ENODEV;
+
+	//the following is added for GM510
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1415 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
+		return -ENODEV;
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1415 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 1)
 		return -ENODEV;
 
 	/* Store the device flags so we can use them during attach. */
