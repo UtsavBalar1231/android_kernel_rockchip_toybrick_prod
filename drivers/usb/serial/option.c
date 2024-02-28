@@ -2039,110 +2039,80 @@ static int option_probe(struct usb_serial *serial,
 	struct usb_device_descriptor *dev_desc = &serial->dev->descriptor;
 	unsigned long device_flags = id->driver_info;
 
+	pr_err("DEBUG: idVendor=%x, idProduct=%x, bInterfaceNumber=%d\n",
+	       serial->dev->descriptor.idVendor,
+	       serial->dev->descriptor.idProduct,
+	       serial->interface->cur_altsetting->desc.bInterfaceNumber);
+
 	/* Never bind to the CD-Rom emulation interface	*/
-	if (iface_desc->bInterfaceClass == 0x08)
+	if (iface_desc->bInterfaceClass == 0x08) {
+		dev_err(&serial->dev->dev, "CD-ROM emulation interface\n");
 		return -ENODEV;
+	}
 
 	/*
 	 * Don't bind reserved interfaces (like network ones) which often have
 	 * the same class/subclass/protocol as the serial interfaces.  Look at
 	 * the Windows driver .INF files for reserved interface numbers.
 	 */
-	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
+	if (device_flags & RSVD(iface_desc->bInterfaceNumber)) {
+		dev_err(&serial->dev->dev,
+			"Reserved interface number %d\n",
+			iface_desc->bInterfaceNumber);
 		return -ENODEV;
+	}
 	/*
 	 * Don't bind network interface on Samsung GT-B3730, it is handled by
 	 * a separate module.
 	 */
 	if (dev_desc->idVendor == cpu_to_le16(SAMSUNG_VENDOR_ID) &&
 	    dev_desc->idProduct == cpu_to_le16(SAMSUNG_PRODUCT_GT_B3730) &&
-	    iface_desc->bInterfaceClass != USB_CLASS_CDC_DATA)
+	    iface_desc->bInterfaceClass != USB_CLASS_CDC_DATA) {
+		dev_err(&serial->dev->dev, "Samsung GT-B3730\n");
 		return -ENODEV;
+	}
 
 	if (dev_desc->idVendor == cpu_to_le16(0x1286) &&
 	    dev_desc->idProduct == cpu_to_le16(0x4e3c) &&
-	    iface_desc->bInterfaceNumber <= 1)
+	    iface_desc->bInterfaceNumber <= 1) {
+		dev_err(&serial->dev->dev, "Samsung GT-B3730\n");
 		return -ENODEV;
+	}
 
-	pr_err("DEBUG: idVendor=%x, idProduct=%x, bInterfaceNumber=%d\n",
-	       serial->dev->descriptor.idVendor,
-	       serial->dev->descriptor.idProduct,
-	       serial->interface->cur_altsetting->desc.bInterfaceNumber);
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3) {
+		dev_err(&serial->dev->dev, "GOSUNCN GM5XX\n");
+		return -ENODEV;
+	}
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4) {
+		dev_err(&serial->dev->dev, "GOSUNCN GM5XX\n");
+		return -ENODEV;
+	}
+
+	if (serial->dev->descriptor.idVendor == 0x305a &&
+	    serial->dev->descriptor.idProduct == 0x1406 &&
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5) {
+		dev_err(&serial->dev->dev, "GOSUNCN GM5XX\n");
+		return -ENODEV;
+	}
 
 	if (serial->dev->descriptor.idVendor == 0x19d2 &&
 	    serial->dev->descriptor.idProduct == 0x1476 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4) {
+		dev_err(&serial->dev->dev, "GOSUNCN GM5XX\n");
 		return -ENODEV;
+	}
 
 	if (serial->dev->descriptor.idVendor == 0x19d2 &&
 	    serial->dev->descriptor.idProduct == 0x1476 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
+	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5) {
+		dev_err(&serial->dev->dev, "GOSUNCN GM5XX\n");
 		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x1476 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x0199 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x0199 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 1)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x305a &&
-	    serial->dev->descriptor.idProduct == 0x1406 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x305a &&
-	    serial->dev->descriptor.idProduct == 0x1406 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x305a &&
-	    serial->dev->descriptor.idProduct == 0x1406 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x1476 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x1476 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x0199 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x19d2 &&
-	    serial->dev->descriptor.idProduct == 0x0199 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 1)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x305a &&
-	    serial->dev->descriptor.idProduct == 0x1406 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 3)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x305a &&
-	    serial->dev->descriptor.idProduct == 0x1406 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 4)
-		return -ENODEV;
-
-	if (serial->dev->descriptor.idVendor == 0x305a &&
-	    serial->dev->descriptor.idProduct == 0x1406 &&
-	    serial->interface->cur_altsetting->desc.bInterfaceNumber == 5)
-		return -ENODEV;
+	}
 
 	//the following is added for GM510
 	if (serial->dev->descriptor.idVendor == 0x305a &&
