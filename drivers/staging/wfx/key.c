@@ -5,6 +5,7 @@
  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
  * Copyright (c) 2010, ST-Ericsson
  */
+#include <linux/version.h>
 #include <linux/etherdevice.h>
 #include <net/mac80211.h>
 
@@ -30,8 +31,8 @@ static void wfx_free_key(struct wfx_dev *wdev, int idx)
 	wdev->key_map &= ~BIT(idx);
 }
 
-static u8 fill_wep_pair(struct hif_wep_pairwise_key *msg,
-			     struct ieee80211_key_conf *key, u8 *peer_addr)
+static u8 fill_wep_pair(struct wfx_hif_wep_pairwise_key *msg,
+			struct ieee80211_key_conf *key, u8 *peer_addr)
 {
 	WARN(key->keylen > sizeof(msg->key_data), "inconsistent data");
 	msg->key_length = key->keylen;
@@ -40,8 +41,8 @@ static u8 fill_wep_pair(struct hif_wep_pairwise_key *msg,
 	return HIF_KEY_TYPE_WEP_PAIRWISE;
 }
 
-static u8 fill_wep_group(struct hif_wep_group_key *msg,
-			      struct ieee80211_key_conf *key)
+static u8 fill_wep_group(struct wfx_hif_wep_group_key *msg,
+			 struct ieee80211_key_conf *key)
 {
 	WARN(key->keylen > sizeof(msg->key_data), "inconsistent data");
 	msg->key_id = key->keyidx;
@@ -50,14 +51,13 @@ static u8 fill_wep_group(struct hif_wep_group_key *msg,
 	return HIF_KEY_TYPE_WEP_DEFAULT;
 }
 
-static u8 fill_tkip_pair(struct hif_tkip_pairwise_key *msg,
-			      struct ieee80211_key_conf *key, u8 *peer_addr)
+static u8 fill_tkip_pair(struct wfx_hif_tkip_pairwise_key *msg,
+			 struct ieee80211_key_conf *key, u8 *peer_addr)
 {
 	u8 *keybuf = key->key;
 
-	WARN(key->keylen != sizeof(msg->tkip_key_data)
-			    + sizeof(msg->tx_mic_key)
-			    + sizeof(msg->rx_mic_key), "inconsistent data");
+	WARN(key->keylen != sizeof(msg->tkip_key_data) + sizeof(msg->tx_mic_key) +
+			    sizeof(msg->rx_mic_key), "inconsistent data");
 	memcpy(msg->tkip_key_data, keybuf, sizeof(msg->tkip_key_data));
 	keybuf += sizeof(msg->tkip_key_data);
 	memcpy(msg->tx_mic_key, keybuf, sizeof(msg->tx_mic_key));
@@ -67,33 +67,29 @@ static u8 fill_tkip_pair(struct hif_tkip_pairwise_key *msg,
 	return HIF_KEY_TYPE_TKIP_PAIRWISE;
 }
 
-static u8 fill_tkip_group(struct hif_tkip_group_key *msg,
-			       struct ieee80211_key_conf *key,
-			       struct ieee80211_key_seq *seq,
-			       enum nl80211_iftype iftype)
+static u8 fill_tkip_group(struct wfx_hif_tkip_group_key *msg, struct ieee80211_key_conf *key,
+			  struct ieee80211_key_seq *seq, enum nl80211_iftype iftype)
 {
 	u8 *keybuf = key->key;
 
-	WARN(key->keylen != sizeof(msg->tkip_key_data)
-			    + 2 * sizeof(msg->rx_mic_key), "inconsistent data");
+	WARN(key->keylen != sizeof(msg->tkip_key_data) + 2 * sizeof(msg->rx_mic_key),
+	     "inconsistent data");
 	msg->key_id = key->keyidx;
-	memcpy(msg->rx_sequence_counter,
-	       &seq->tkip.iv16, sizeof(seq->tkip.iv16));
-	memcpy(msg->rx_sequence_counter + sizeof(u16),
-	       &seq->tkip.iv32, sizeof(seq->tkip.iv32));
+	memcpy(msg->rx_sequence_counter, &seq->tkip.iv16, sizeof(seq->tkip.iv16));
+	memcpy(msg->rx_sequence_counter + sizeof(u16), &seq->tkip.iv32, sizeof(seq->tkip.iv32));
 	memcpy(msg->tkip_key_data, keybuf, sizeof(msg->tkip_key_data));
 	keybuf += sizeof(msg->tkip_key_data);
 	if (iftype == NL80211_IFTYPE_AP)
-		// Use Tx MIC Key
+		/* Use Tx MIC Key */
 		memcpy(msg->rx_mic_key, keybuf + 0, sizeof(msg->rx_mic_key));
 	else
-		// Use Rx MIC Key
+		/* Use Rx MIC Key */
 		memcpy(msg->rx_mic_key, keybuf + 8, sizeof(msg->rx_mic_key));
 	return HIF_KEY_TYPE_TKIP_GROUP;
 }
 
-static u8 fill_ccmp_pair(struct hif_aes_pairwise_key *msg,
-			      struct ieee80211_key_conf *key, u8 *peer_addr)
+static u8 fill_ccmp_pair(struct wfx_hif_aes_pairwise_key *msg,
+			 struct ieee80211_key_conf *key, u8 *peer_addr)
 {
 	WARN(key->keylen != sizeof(msg->aes_key_data), "inconsistent data");
 	ether_addr_copy(msg->peer_address, peer_addr);
@@ -101,9 +97,8 @@ static u8 fill_ccmp_pair(struct hif_aes_pairwise_key *msg,
 	return HIF_KEY_TYPE_AES_PAIRWISE;
 }
 
-static u8 fill_ccmp_group(struct hif_aes_group_key *msg,
-			       struct ieee80211_key_conf *key,
-			       struct ieee80211_key_seq *seq)
+static u8 fill_ccmp_group(struct wfx_hif_aes_group_key *msg,
+			  struct ieee80211_key_conf *key, struct ieee80211_key_seq *seq)
 {
 	WARN(key->keylen != sizeof(msg->aes_key_data), "inconsistent data");
 	memcpy(msg->aes_key_data, key->key, key->keylen);
@@ -113,13 +108,13 @@ static u8 fill_ccmp_group(struct hif_aes_group_key *msg,
 	return HIF_KEY_TYPE_AES_GROUP;
 }
 
-static u8 fill_sms4_pair(struct hif_wapi_pairwise_key *msg,
-			      struct ieee80211_key_conf *key, u8 *peer_addr)
+static u8 fill_sms4_pair(struct wfx_hif_wapi_pairwise_key *msg,
+			 struct ieee80211_key_conf *key, u8 *peer_addr)
 {
 	u8 *keybuf = key->key;
 
-	WARN(key->keylen != sizeof(msg->wapi_key_data)
-			    + sizeof(msg->mic_key_data), "inconsistent data");
+	WARN(key->keylen != sizeof(msg->wapi_key_data) + sizeof(msg->mic_key_data),
+	     "inconsistent data");
 	ether_addr_copy(msg->peer_address, peer_addr);
 	memcpy(msg->wapi_key_data, keybuf, sizeof(msg->wapi_key_data));
 	keybuf += sizeof(msg->wapi_key_data);
@@ -128,13 +123,13 @@ static u8 fill_sms4_pair(struct hif_wapi_pairwise_key *msg,
 	return HIF_KEY_TYPE_WAPI_PAIRWISE;
 }
 
-static u8 fill_sms4_group(struct hif_wapi_group_key *msg,
-			       struct ieee80211_key_conf *key)
+static u8 fill_sms4_group(struct wfx_hif_wapi_group_key *msg,
+			  struct ieee80211_key_conf *key)
 {
 	u8 *keybuf = key->key;
 
-	WARN(key->keylen != sizeof(msg->wapi_key_data)
-			    + sizeof(msg->mic_key_data), "inconsistent data");
+	WARN(key->keylen != sizeof(msg->wapi_key_data) + sizeof(msg->mic_key_data),
+	     "inconsistent data");
 	memcpy(msg->wapi_key_data, keybuf, sizeof(msg->wapi_key_data));
 	keybuf += sizeof(msg->wapi_key_data);
 	memcpy(msg->mic_key_data, keybuf, sizeof(msg->mic_key_data));
@@ -142,9 +137,8 @@ static u8 fill_sms4_group(struct hif_wapi_group_key *msg,
 	return HIF_KEY_TYPE_WAPI_GROUP;
 }
 
-static u8 fill_aes_cmac_group(struct hif_igtk_group_key *msg,
-				   struct ieee80211_key_conf *key,
-				   struct ieee80211_key_seq *seq)
+static u8 fill_aes_cmac_group(struct wfx_hif_igtk_group_key *msg,
+			      struct ieee80211_key_conf *key, struct ieee80211_key_seq *seq)
 {
 	WARN(key->keylen != sizeof(msg->igtk_key_data), "inconsistent data");
 	memcpy(msg->igtk_key_data, key->key, key->keylen);
@@ -158,11 +152,12 @@ static int wfx_add_key(struct wfx_vif *wvif, struct ieee80211_sta *sta,
 		       struct ieee80211_key_conf *key)
 {
 	int ret;
-	struct hif_req_add_key k = { };
+	struct wfx_hif_req_add_key k = { };
 	struct ieee80211_key_seq seq;
 	struct wfx_dev *wdev = wvif->wdev;
 	int idx = wfx_alloc_key(wvif->wdev);
 	bool pairwise = key->flags & IEEE80211_KEY_FLAG_PAIRWISE;
+	struct ieee80211_vif *vif = wvif_to_vif(wvif);
 
 	WARN(key->flags & IEEE80211_KEY_FLAG_PAIRWISE && !sta, "inconsistent data");
 	ieee80211_get_key_rx_seq(key, 0, &seq);
@@ -173,45 +168,59 @@ static int wfx_add_key(struct wfx_vif *wvif, struct ieee80211_sta *sta,
 	if (key->cipher == WLAN_CIPHER_SUITE_WEP40 ||
 	    key->cipher == WLAN_CIPHER_SUITE_WEP104) {
 		if (pairwise)
-			k.type = fill_wep_pair(&k.key.wep_pairwise_key, key,
-					       sta->addr);
+			k.type = fill_wep_pair(&k.key.wep_pairwise_key, key, sta->addr);
 		else
 			k.type = fill_wep_group(&k.key.wep_group_key, key);
 	} else if (key->cipher == WLAN_CIPHER_SUITE_TKIP) {
 		if (pairwise)
-			k.type = fill_tkip_pair(&k.key.tkip_pairwise_key, key,
-						sta->addr);
+			k.type = fill_tkip_pair(&k.key.tkip_pairwise_key, key, sta->addr);
 		else
-			k.type = fill_tkip_group(&k.key.tkip_group_key, key,
-						 &seq, wvif->vif->type);
+			k.type = fill_tkip_group(&k.key.tkip_group_key, key, &seq,
+						 vif->type);
 	} else if (key->cipher == WLAN_CIPHER_SUITE_CCMP) {
 		if (pairwise)
-			k.type = fill_ccmp_pair(&k.key.aes_pairwise_key, key,
-						sta->addr);
+			k.type = fill_ccmp_pair(&k.key.aes_pairwise_key, key, sta->addr);
 		else
-			k.type = fill_ccmp_group(&k.key.aes_group_key, key,
-						 &seq);
+			k.type = fill_ccmp_group(&k.key.aes_group_key, key, &seq);
 	} else if (key->cipher == WLAN_CIPHER_SUITE_SMS4) {
 		if (pairwise)
-			k.type = fill_sms4_pair(&k.key.wapi_pairwise_key, key,
-						sta->addr);
+			k.type = fill_sms4_pair(&k.key.wapi_pairwise_key, key, sta->addr);
 		else
 			k.type = fill_sms4_group(&k.key.wapi_group_key, key);
 	} else if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC) {
 		k.type = fill_aes_cmac_group(&k.key.igtk_group_key, key, &seq);
+#if KERNEL_VERSION(5, 4, 0) > LINUX_VERSION_CODE
+		wfx_free_key(wdev, idx);
+		return -EOPNOTSUPP;
+#else
 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_MMIE;
+#endif
 	} else {
 		dev_warn(wdev->dev, "unsupported key type %d\n", key->cipher);
 		wfx_free_key(wdev, idx);
 		return -EOPNOTSUPP;
 	}
-	ret = hif_add_key(wdev, &k);
+	ret = wfx_hif_add_key(wdev, &k);
 	if (ret) {
+#if KERNEL_VERSION(4, 14, 0) > LINUX_VERSION_CODE
+#if KERNEL_VERSION(4, 9, 63) > LINUX_VERSION_CODE || KERNEL_VERSION(4, 10, 0) <= LINUX_VERSION_CODE
+#if KERNEL_VERSION(4, 4, 99) > LINUX_VERSION_CODE || KERNEL_VERSION(4, 5, 0) <= LINUX_VERSION_CODE
+		if (ret == HIF_STATUS_INVALID_PARAMETER) {
+			/* Use a patched kernel in order to solve this error */
+			dev_warn(wdev->dev, "chip prevents re-installation of same key\n");
+			dev_warn(wdev->dev, "your kernel is not patched to protect against KRACK attack\n");
+		}
+#endif
+#endif
+#endif
 		wfx_free_key(wdev, idx);
 		return -EOPNOTSUPP;
 	}
-	key->flags |= IEEE80211_KEY_FLAG_PUT_IV_SPACE |
-		      IEEE80211_KEY_FLAG_RESERVE_TAILROOM;
+#if (KERNEL_VERSION(3, 19, 0) > LINUX_VERSION_CODE)
+	key->flags |= IEEE80211_KEY_FLAG_PUT_IV_SPACE;
+#else
+	key->flags |= IEEE80211_KEY_FLAG_PUT_IV_SPACE | IEEE80211_KEY_FLAG_RESERVE_TAILROOM;
+#endif
 	key->hw_key_idx = idx;
 	return 0;
 }
@@ -220,12 +229,11 @@ static int wfx_remove_key(struct wfx_vif *wvif, struct ieee80211_key_conf *key)
 {
 	WARN(key->hw_key_idx >= MAX_KEY_ENTRIES, "corrupted hw_key_idx");
 	wfx_free_key(wvif->wdev, key->hw_key_idx);
-	return hif_remove_key(wvif->wdev, key->hw_key_idx);
+	return wfx_hif_remove_key(wvif->wdev, key->hw_key_idx);
 }
 
-int wfx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
-		struct ieee80211_vif *vif, struct ieee80211_sta *sta,
-		struct ieee80211_key_conf *key)
+int wfx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd, struct ieee80211_vif *vif,
+		struct ieee80211_sta *sta, struct ieee80211_key_conf *key)
 {
 	int ret = -EOPNOTSUPP;
 	struct wfx_vif *wvif = (struct wfx_vif *)vif->drv_priv;
@@ -238,4 +246,3 @@ int wfx_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	mutex_unlock(&wvif->wdev->conf_mutex);
 	return ret;
 }
-
