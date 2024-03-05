@@ -5,11 +5,13 @@
  * Copyright (c) 2017-2020, Silicon Laboratories, Inc.
  * Copyright (c) 2010, ST-Ericsson
  */
+#include <linux/version.h>
 #include <linux/module.h>
 #include <linux/mmc/sdio.h>
 #include <linux/mmc/sdio_func.h>
 #include <linux/mmc/card.h>
 #include <linux/interrupt.h>
+#include <linux/of_device.h>
 #include <linux/of_irq.h>
 #include <linux/irq.h>
 
@@ -19,7 +21,45 @@
 #include "main.h"
 #include "bh.h"
 
-static const struct wfx_platform_data wfx_sdio_pdata = {
+#if (KERNEL_VERSION(5, 13, 0) <= LINUX_VERSION_CODE)
+#include <linux/align.h>
+#endif
+
+#if (KERNEL_VERSION(4, 2, 0) > LINUX_VERSION_CODE)
+static const void *of_device_get_match_data(const struct device *dev)
+{
+	const struct of_device_id *match;
+
+	match = of_match_device(dev->driver->of_match_table, dev);
+	if (!match)
+		return NULL;
+
+	return match->data;
+}
+#endif
+
+static const struct wfx_platform_data pdata_wf200 = {
+	.file_fw = "wfx/wfm_wf200",
+	.file_pds = "wfx/wf200.pds",
+};
+
+static const struct wfx_platform_data pdata_brd4001a = {
+	.file_fw = "wfx/wfm_wf200",
+	.file_pds = "wfx/brd4001a.pds",
+};
+
+static const struct wfx_platform_data pdata_brd8022a = {
+	.file_fw = "wfx/wfm_wf200",
+	.file_pds = "wfx/brd8022a.pds",
+};
+
+static const struct wfx_platform_data pdata_brd8023a = {
+	.file_fw = "wfx/wfm_wf200",
+	.file_pds = "wfx/brd8023a.pds",
+};
+
+/* Legacy DT don't use it */
+static const struct wfx_platform_data pdata_wfx_sdio = {
 	.file_fw = "wfm_wf200",
 	.file_pds = "wf200.pds",
 };
@@ -32,16 +72,15 @@ struct wfx_sdio_priv {
 	int of_irq;
 };
 
-static int wfx_sdio_copy_from_io(void *priv, unsigned int reg_id,
-				 void *dst, size_t count)
+static int wfx_sdio_copy_from_io(void *priv, unsigned int reg_id, void *dst, size_t count)
 {
 	struct wfx_sdio_priv *bus = priv;
 	unsigned int sdio_addr = reg_id << 2;
 	int ret;
 
 	WARN(reg_id > 7, "chip only has 7 registers");
-	WARN(((uintptr_t)dst) & 3, "unaligned buffer size");
-	WARN(count & 3, "unaligned buffer address");
+	WARN(!IS_ALIGNED((uintptr_t)dst, 4), "unaligned buffer address");
+	WARN(!IS_ALIGNED(count, 4), "unaligned buffer size");
 
 	/* Use queue mode buffers */
 	if (reg_id == WFX_REG_IN_OUT_QUEUE)
@@ -53,21 +92,20 @@ static int wfx_sdio_copy_from_io(void *priv, unsigned int reg_id,
 	return ret;
 }
 
-static int wfx_sdio_copy_to_io(void *priv, unsigned int reg_id,
-			       const void *src, size_t count)
+static int wfx_sdio_copy_to_io(void *priv, unsigned int reg_id, const void *src, size_t count)
 {
 	struct wfx_sdio_priv *bus = priv;
 	unsigned int sdio_addr = reg_id << 2;
 	int ret;
 
 	WARN(reg_id > 7, "chip only has 7 registers");
-	WARN(((uintptr_t)src) & 3, "unaligned buffer size");
-	WARN(count & 3, "unaligned buffer address");
+	WARN(!IS_ALIGNED((uintptr_t)src, 4), "unaligned buffer address");
+	WARN(!IS_ALIGNED(count, 4), "unaligned buffer size");
 
 	/* Use queue mode buffers */
 	if (reg_id == WFX_REG_IN_OUT_QUEUE)
 		sdio_addr |= bus->buf_id_tx << 7;
-	// FIXME: discards 'const' qualifier for src
+	/* FIXME: discards 'const' qualifier for src */
 	ret = sdio_memcpy_toio(bus->func, sdio_addr, (void *)src, count);
 	if (!ret && reg_id == WFX_REG_IN_OUT_QUEUE)
 		bus->buf_id_tx = (bus->buf_id_tx + 1) % 32;
@@ -125,8 +163,7 @@ static int wfx_sdio_irq_subscribe(void *priv)
 		flags = IRQF_TRIGGER_HIGH;
 	flags |= IRQF_ONESHOT;
 	ret = devm_request_threaded_irq(&bus->func->dev, bus->of_irq, NULL,
-					wfx_sdio_irq_handler_ext, flags,
-					"wfx", bus);
+					wfx_sdio_irq_handler_ext, flags, "wfx", bus);
 	if (ret)
 		return ret;
 	sdio_claim_host(bus->func);
@@ -158,27 +195,30 @@ static size_t wfx_sdio_align_size(void *priv, size_t size)
 	return sdio_align_size(bus->func, size);
 }
 
-static const struct hwbus_ops wfx_sdio_hwbus_ops = {
-	.copy_from_io = wfx_sdio_copy_from_io,
-	.copy_to_io = wfx_sdio_copy_to_io,
-	.irq_subscribe = wfx_sdio_irq_subscribe,
+static const struct wfx_hwbus_ops wfx_sdio_hwbus_ops = {
+	.copy_from_io    = wfx_sdio_copy_from_io,
+	.copy_to_io      = wfx_sdio_copy_to_io,
+	.irq_subscribe   = wfx_sdio_irq_subscribe,
 	.irq_unsubscribe = wfx_sdio_irq_unsubscribe,
-	.lock			= wfx_sdio_lock,
-	.unlock			= wfx_sdio_unlock,
-	.align_size		= wfx_sdio_align_size,
+	.lock            = wfx_sdio_lock,
+	.unlock          = wfx_sdio_unlock,
+	.align_size      = wfx_sdio_align_size,
 };
 
 static const struct of_device_id wfx_sdio_of_match[] = {
-	{ .compatible = "silabs,wfx-sdio" },
-	{ .compatible = "silabs,wf200" },
+	{ .compatible = "silabs,wf200",    .data = &pdata_wf200 },
+	{ .compatible = "silabs,brd4001a", .data = &pdata_brd4001a },
+	{ .compatible = "silabs,brd8022a", .data = &pdata_brd8022a },
+	{ .compatible = "silabs,brd8023a", .data = &pdata_brd8023a },
+	{ .compatible = "silabs,wfx-sdio", .data = &pdata_wfx_sdio },
 	{ },
 };
 MODULE_DEVICE_TABLE(of, wfx_sdio_of_match);
 
-static int wfx_sdio_probe(struct sdio_func *func,
-			  const struct sdio_device_id *id)
+static int wfx_sdio_probe(struct sdio_func *func, const struct sdio_device_id *id)
 {
 	struct device_node *np = func->dev.of_node;
+	const struct wfx_platform_data *pdata;
 	struct wfx_sdio_priv *bus;
 	int ret;
 
@@ -193,16 +233,17 @@ static int wfx_sdio_probe(struct sdio_func *func,
 		return -ENOMEM;
 
 	if (np) {
-		if (!of_match_node(wfx_sdio_of_match, np)) {
+		pdata = of_device_get_match_data(&func->dev);
+		if (!pdata) {
 			dev_warn(&func->dev, "no compatible device found in DT\n");
 			return -ENODEV;
 		}
 		bus->of_irq = irq_of_parse_and_map(np, 0);
 	} else {
-		dev_warn(&func->dev,
-			 "device is not declared in DT, features will be limited\n");
-		// FIXME: ignore VID/PID and only rely on device tree
+		dev_warn(&func->dev, "device is not declared in DT, features will be limited\n");
+		/* FIXME: ignore VID/PID and only rely on device tree */
 		// return -ENODEV;
+		pdata = &pdata_wf200;
 	}
 
 	bus->func = func;
@@ -213,30 +254,28 @@ static int wfx_sdio_probe(struct sdio_func *func,
 
 	sdio_claim_host(func);
 	ret = sdio_enable_func(func);
-	// Block of 64 bytes is more efficient than 512B for frame sizes < 4k
+	/* Block of 64 bytes is more efficient than 512B for frame sizes < 4k */
 	sdio_set_block_size(func, 64);
 	sdio_release_host(func);
 	if (ret)
-		goto err0;
+		return ret;
 
-	bus->core = wfx_init_common(&func->dev, &wfx_sdio_pdata,
-				    &wfx_sdio_hwbus_ops, bus);
+	bus->core = wfx_init_common(&func->dev, pdata, &wfx_sdio_hwbus_ops, bus);
 	if (!bus->core) {
 		ret = -EIO;
-		goto err1;
+		goto sdio_release;
 	}
 
 	ret = wfx_probe(bus->core);
 	if (ret)
-		goto err1;
+		goto sdio_release;
 
 	return 0;
 
-err1:
+sdio_release:
 	sdio_claim_host(func);
 	sdio_disable_func(func);
 	sdio_release_host(func);
-err0:
 	return ret;
 }
 
@@ -250,11 +289,10 @@ static void wfx_sdio_remove(struct sdio_func *func)
 	sdio_release_host(func);
 }
 
-#define SDIO_VENDOR_ID_SILABS        0x0000
-#define SDIO_DEVICE_ID_SILABS_WF200  0x1000
 static const struct sdio_device_id wfx_sdio_ids[] = {
-	{ SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200) },
-	// FIXME: ignore VID/PID and only rely on device tree
+	/* WF200 does not have official VID/PID */
+	{ SDIO_DEVICE(0x0000, 0x1000) },
+	/* FIXME: ignore VID/PID and only rely on device tree */
 	// { SDIO_DEVICE(SDIO_ANY_ID, SDIO_ANY_ID) },
 	{ },
 };
