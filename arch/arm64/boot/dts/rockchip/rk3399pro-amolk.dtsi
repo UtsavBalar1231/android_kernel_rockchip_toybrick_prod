@@ -151,16 +151,22 @@
 		status = "disabled";
 	};
 
-	mgm_reset_gpio: mgm-reset-gpio {
-		compatible = "mgm-reset-gpio";
-		mgm-reset-gpio = <&gpio2 RK_PA3 GPIO_ACTIVE_HIGH>;
+	mgm_reset: mgm-reset {
+		compatible = "regulator-fixed";
+		regulator-name = "mgm_reset";
+		enable-active-high;
+		regulator-always-on;
+		regulator-boot-on;
+		gpio = <&gpio2 RK_PA3 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
-	gm500_gpio: gm500-gpio {
-		compatible = "gm500-gpio";
-		gm500-reset-gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
-		gm500-on-off-gpio = <&gpio3 RK_PD2 GPIO_ACTIVE_HIGH>;
+	gm500_modem: gm500-modem {
+		compatible = "4g-modem-platdata";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gm500_power &gm500_reset>;
+		4G,power-gpio = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
+		4G,reset-gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
@@ -737,25 +743,25 @@
 };
 
 &i2s0 {
-	status = "okay";
-	rockchip,i2s-broken-burst-len;
-	rockchip,playback-channels = <8>;
-	rockchip,capture-channels = <8>;
-	dma-names ="rx";
-	dmas = <&dmac_bus 1>;
-	#sound-dai-cells = <0>;
+        status = "okay";
+        rockchip,i2s-broken-burst-len;
+        rockchip,playback-channels = <8>;
+        rockchip,capture-channels = <8>;
+        dma-names ="rx";
+        dmas = <&dmac_bus 1>;
+        #sound-dai-cells = <0>;
 };
 
 &i2s1 {
-	status = "okay";
-	#sound-dai-cells = <0>;
+        status = "okay";
+        #sound-dai-cells = <0>;
 };
 
 &i2s2 {
-	status = "okay";
-	dmas = <&dmac_bus 4>;
-	dma-names ="tx";
-	#sound-dai-cells = <0>;
+        status = "okay";
+        dmas = <&dmac_bus 4>;
+        dma-names ="tx";
+        #sound-dai-cells = <0>;
 };
 
 &io_domains {
@@ -1002,6 +1008,16 @@
 &pinctrl {
 	pinctrl-names = "default";
 	pinctrl-0 = <&npu_ref_clk>;
+
+	gm500-modem {
+		gm500_power: gm500-power-gpio {
+			rockchip,pins = <3 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		gm500_reset: gm500-reset-gpio {
+			rockchip,pins = <3 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
 
 	usbc {
 		usbc0_int: usbc0-int {
