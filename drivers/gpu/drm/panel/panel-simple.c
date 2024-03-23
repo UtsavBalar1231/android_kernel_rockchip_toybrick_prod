@@ -21,6 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#define pr_fmt(fmt) "panel-simple: " fmt
 #include <linux/delay.h>
 #include <linux/gpio/consumer.h>
 #include <linux/iopoll.h>
@@ -975,6 +976,7 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
 	return 0;
 
 free_ddc:
+	dev_err(dev, "failed to get ddc bus: %d\n", err);
 	if (panel->ddc)
 		put_device(&panel->ddc->dev);
 
@@ -5084,8 +5086,10 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
 	int err;
 
 	id = of_match_node(dsi_of_match, dsi->dev.of_node);
-	if (!id)
+	if (!id) {
+		dev_err(dev, "no compatible device found\n");
 		return -ENODEV;
+	}
 
 	if (!id->data) {
 		d = devm_kzalloc(dev, sizeof(*d), GFP_KERNEL);
@@ -5102,8 +5106,10 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
 	desc = id->data ? id->data : d;
 
 	err = panel_simple_probe(&dsi->dev, &desc->desc);
-	if (err < 0)
+	if (err < 0) {
+		dev_err(dev, "failed to probe simple panel: %d\n", err);
 		return err;
+	}
 
 	panel = dev_get_drvdata(dev);
 	panel->dsi = dsi;
@@ -5135,6 +5141,7 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
 	err = mipi_dsi_attach(dsi);
 	if (err) {
 		struct panel_simple *panel = dev_get_drvdata(&dsi->dev);
+		dev_err(dev, "failed to attach to DSI host: %d\n", err);
 
 		drm_panel_remove(&panel->base);
 	}
@@ -5280,8 +5287,10 @@ static int __init panel_simple_init(void)
 	int err;
 
 	err = platform_driver_register(&panel_simple_platform_driver);
-	if (err < 0)
+	if (err < 0) {
+		pr_err("failed to register platform driver: %d\n", err);
 		return err;
+	}
 
 	if (IS_ENABLED(CONFIG_SPI_MASTER)) {
 		err = spi_register_driver(&panel_simple_spi_driver);
@@ -5291,8 +5300,10 @@ static int __init panel_simple_init(void)
 
 	if (IS_ENABLED(CONFIG_DRM_MIPI_DSI)) {
 		err = mipi_dsi_driver_register(&panel_simple_dsi_driver);
-		if (err < 0)
+		if (err < 0) {
+			pr_err("failed to register mipi dsi driver: %d\n", err);
 			return err;
+		}
 	}
 
 	return 0;
