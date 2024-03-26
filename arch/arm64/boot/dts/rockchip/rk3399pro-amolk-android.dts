@@ -11,12 +11,7 @@
 	};
 };
 
-&rk_key {
-	status = "okay";
-	io-channels = <&saradc 2>;
-	/delete-node/ power-key;
-};
-
+/*
 &firmware_android {
 	compatible = "android,firmware";
 
@@ -40,6 +35,7 @@
 		};
 	};
 };
+*/
 
 &hdmi_in_vopl {
 	status = "disabled";
