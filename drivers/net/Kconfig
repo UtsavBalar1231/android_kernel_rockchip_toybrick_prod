@@ -632,3 +632,5 @@ config NETDEV_LEGACY_INIT
 	  symbol, everything else no longer needs it.
 
 endif # NETDEVICES
+
+source "drivers/net/lte/Kconfig"
