@@ -314,18 +314,21 @@
 	rkisp_vir1: rkisp-vir1 {
 		compatible = "rockchip,rkisp-vir";
 		rockchip,hw = <&rkisp>;
+		dvbm = <&rkdvbm>;
 		status = "disabled";
 	};
 
 	rkisp_vir2: rkisp-vir2 {
 		compatible = "rockchip,rkisp-vir";
 		rockchip,hw = <&rkisp>;
+		dvbm = <&rkdvbm>;
 		status = "disabled";
 	};
 
 	rkisp_vir3: rkisp-vir3 {
 		compatible = "rockchip,rkisp-vir";
 		rockchip,hw = <&rkisp>;
+		dvbm = <&rkdvbm>;
 		status = "disabled";
 	};
 
@@ -1359,6 +1362,7 @@
 				nvmem-cells = <&macphy_txlevel>;
 				nvmem-cell-names = "txlevel";
 				bgs,increment = <2>;
+				rockchip,thermal-zone = "soc-thermal";
 			};
 		};
 

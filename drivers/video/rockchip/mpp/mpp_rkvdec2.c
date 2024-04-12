@@ -713,8 +713,8 @@ static int rkvdec2_devfreq_target(struct device *dev,
 	struct dev_pm_opp *opp;
 	unsigned long target_volt, target_freq;
 	int ret = 0;
-
-	struct rkvdec2_dev *dec = dev_get_drvdata(dev);
+	struct mpp_dev *mpp = dev_get_drvdata(dev);
+	struct rkvdec2_dev *dec = to_rkvdec2_dev(mpp);
 	struct devfreq *devfreq = dec->devfreq;
 	struct devfreq_dev_status *stat = &devfreq->last_status;
 	unsigned long old_clk_rate = stat->current_frequency;
@@ -776,7 +776,8 @@ static int rkvdec2_devfreq_get_dev_status(struct device *dev,
 static int rkvdec2_devfreq_get_cur_freq(struct device *dev,
 					unsigned long *freq)
 {
-	struct rkvdec2_dev *dec = dev_get_drvdata(dev);
+	struct mpp_dev *mpp = dev_get_drvdata(dev);
+	struct rkvdec2_dev *dec = to_rkvdec2_dev(mpp);
 
 	*freq = dec->core_last_rate_hz;
 
@@ -816,13 +817,14 @@ static struct devfreq_governor devfreq_vdec2_ondemand = {
 static unsigned long rkvdec2_get_static_power(struct devfreq *devfreq,
 					      unsigned long voltage)
 {
-	struct rkvdec2_dev *dec = devfreq->data;
+	struct device *dev = devfreq->dev.parent;
+	struct mpp_dev *mpp = dev_get_drvdata(dev);
+	struct rkvdec2_dev *dec = to_rkvdec2_dev(mpp);
 
-	if (!dec->model_data)
+	if (!dec || !dec->model_data)
 		return 0;
-	else
-		return rockchip_ipa_get_static_power(dec->model_data,
-						     voltage);
+
+	return rockchip_ipa_get_static_power(dec->model_data, voltage);
 }
 
 static struct devfreq_cooling_power vdec2_cooling_power_data = {

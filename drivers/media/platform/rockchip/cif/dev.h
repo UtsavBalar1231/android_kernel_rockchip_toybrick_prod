@@ -512,6 +512,10 @@ struct rkcif_stream {
 	unsigned int			frame_idx;
 	int				frame_phase;
 	int				frame_phase_cache;
+	int				last_fs_interlaced_phase;
+	int				last_fe_interlaced_phase;
+	int				odd_frame_id;
+	int				odd_frame_first;
 	unsigned int			crop_mask;
 	/* lock between irq and buf_queue */
 	struct list_head		buf_head;
@@ -583,6 +587,7 @@ struct rkcif_stream {
 	bool				is_wait_dma_stop;
 	bool				is_single_cap;
 	bool				is_wait_stop_complete;
+	bool				interlaced_bad_frame;
 };
 
 struct rkcif_lvds_subdev {
@@ -834,6 +839,13 @@ struct rkcif_sensor_work {
 	int on;
 };
 
+enum rkcif_interlace_mode {
+	RKCIF_INTERLACE_NONE,
+	RKCIF_INTERLACE_SOFT,
+	RKCIF_INTERLACE_SOFT_AUTO,
+	RKCIF_INTERLACE_HW,
+};
+
 /*
  * struct rkcif_device - ISP platform device
  * @base_addr: base register address
@@ -907,8 +919,10 @@ struct rkcif_device {
 	bool				is_rdbk_to_online;
 	bool				is_support_tools;
 	bool				is_rtt_suspend;
+	bool				is_aov_reserved;
 	bool				sensor_state_change;
 	bool				is_toisp_reset;
+	bool				use_hw_interlace;
 	int				rdbk_debug;
 	struct rkcif_sync_cfg		sync_cfg;
 	int				sditf_cnt;
@@ -925,6 +939,7 @@ struct rkcif_device {
 	int				sensor_state;
 	u32				intr_mask;
 	struct delayed_work		work_deal_err;
+	u32				other_intstat[RKMODULE_MULTI_DEV_NUM];
 };
 
 extern struct platform_driver rkcif_plat_drv;
@@ -1031,5 +1046,7 @@ static inline u64 rkcif_time_get_ns(struct rkcif_device *dev)
 	else
 		return ktime_get_ns();
 }
+
+bool rkcif_check_single_dev_stream_on(struct rkcif_hw *hw);
 
 #endif
