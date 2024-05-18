@@ -64,12 +64,33 @@
 		target = <&route_dsi1>;
 
 		__overlay__ {
-			status = "disabled";
+			status = "okay";
 		};
 	};
 
 	fragment@8 {
 		target = <&hdmi>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@9 {
+		target = <&hdmi_in_vp0>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@10 {
+		target = <&hdmi_in_vp1>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@11 {
+		target = <&hdmi_sound>;
 		__overlay__ {
 			status = "disabled";
 		};
