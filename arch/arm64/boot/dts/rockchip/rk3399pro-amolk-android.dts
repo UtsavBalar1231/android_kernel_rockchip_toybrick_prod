@@ -26,6 +26,7 @@
 
 &dsi {
 	status = "okay";
+	/delete-node/ panel@0;
 
     dsi0_panel: panel@0 {
 		status = "okay";

@@ -54,7 +54,7 @@
 			240 241 242 243 244 245 246 247
 			248 249 250 251 252 253 254 255
 		>;
-		default-brightness-level = <200>;
+		default-brightness-level = <255>;
 		enable-gpios = <&gpio4 RK_PD4 GPIO_ACTIVE_HIGH>;
 	};
 
@@ -69,7 +69,7 @@
 	};
 
 	spdif-sound {
-		status = "okay";
+		status = "disabled";
 		compatible = "simple-audio-card";
 		simple-audio-card,name = "rockchip,spdif";
 		simple-audio-card,cpu {
@@ -81,7 +81,7 @@
 	};
 
 	spdif_out: spdif-out {
-		status = "okay";
+		status = "disabled";
 		compatible = "linux,spdif-dit";
 		#sound-dai-cells = <0>;
 	};
@@ -115,7 +115,7 @@
 
 	rk809_sound: rk809-sound {
 		compatible = "rockchip,multicodecs-card";
-		rockchip,card-name = "rockchip,rk809-codec";
+		rockchip,card-name = "rockchip-rk809";
 		rockchip,codec-hp-det;
 		rockchip,mclk-fs = <256>;
 		rockchip,cpu = <&i2s1>;
@@ -130,7 +130,7 @@
 		rockchip,cpu = <&i2s2>;
 		rockchip,codec = <&hdmi>;
 		rockchip,jack-det;
-		status = "okay";
+		status = "disabled";
 	};
 
 	wireless_bluetooth: wireless-bluetooth {
@@ -154,7 +154,7 @@
 		regulator-always-on;
 		regulator-boot-on;
 		gpio = <&gpio2 RK_PA3 GPIO_ACTIVE_HIGH>;
-		status = "okay";
+		status = "disabled";
 	};
 
 	gm500_modem: gm500-modem {
@@ -162,7 +162,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&gm500_power &gm500_reset>;
 		4G,power-gpio = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
-		4G,reset-gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
+		4G,reset-gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_LOW>;
 		status = "okay";
 	};
 
@@ -222,9 +222,9 @@
 	system-status-freq = <
 		/*system status         freq(KHz)*/
 		SYS_STATUS_NORMAL       856000
-		SYS_STATUS_REBOOT       416000
-		SYS_STATUS_SUSPEND      416000
-		SYS_STATUS_VIDEO_1080P  416000
+		SYS_STATUS_REBOOT       856000
+		SYS_STATUS_SUSPEND      328000
+		SYS_STATUS_VIDEO_1080P  666000
 		SYS_STATUS_VIDEO_4K     856000
 		SYS_STATUS_VIDEO_4K_10B 856000
 		SYS_STATUS_PERFORMANCE  856000
@@ -232,17 +232,19 @@
 		SYS_STATUS_DUALVIEW     856000
 		SYS_STATUS_ISP          856000
 	>;
-	vop-pn-msch-readlatency = <
-	/* plane_number  readlatency */
-		0	0
-		4	0x20
-	>;
 	vop-bw-dmc-freq = <
 	/* min_bw(MB/s) max_bw(MB/s) freq(KHz) */
-		763     1893     416000
+		0       762      416000
+		763     3012     666000
 		3013    99999    856000
 	>;
-	auto-min-freq = <416000>;
+
+	vop-pn-msch-readlatency = <
+		0	0x20
+		4	0x20
+	>;
+
+	auto-min-freq = <328000>;
 	auto-freq-en = <0>;
 };
 
@@ -251,18 +253,26 @@
 
 	opp-200000000 {
 		opp-hz = /bits/ 64 <200000000>;
-		opp-microvolt = <825000>;
+		opp-microvolt = <900000>;
 		status = "disabled";
 	};
 	opp-300000000 {
 		opp-hz = /bits/ 64 <300000000>;
-		opp-microvolt = <850000>;
+		opp-microvolt = <900000>;
 		status = "disabled";
+	};
+	opp-328000000 {
+		opp-hz = /bits/ 64 <328000000>;
+		opp-microvolt = <900000>;
 	};
 	opp-400000000 {
 		opp-hz = /bits/ 64 <400000000>;
 		opp-microvolt = <900000>;
 		status = "disabled";
+	};
+	opp-416000000 {
+		opp-hz = /bits/ 64 <416000000>;
+		opp-microvolt = <900000>;
 	};
 	opp-528000000 {
 		opp-hz = /bits/ 64 <528000000>;
@@ -274,30 +284,23 @@
 		opp-microvolt = <900000>;
 		status = "disabled";
 	};
+	opp-666000000 {
+		opp-hz = /bits/ 64 <666000000>;
+		opp-microvolt = <900000>;
+	};
 	opp-800000000 {
 		opp-hz = /bits/ 64 <800000000>;
 		opp-microvolt = <900000>;
 		status = "disabled";
 	};
-	opp-328000000 {
-		opp-hz = /bits/ 64 <328000000>;
-		opp-microvolt = <850000>;
-		status = "okay";
-	};
-	opp-416000000 {
-		opp-hz = /bits/ 64 <416000000>;
-		opp-microvolt = <900000>;
-		status = "okay";
-	};
-	opp-666000000 {
-		opp-hz = /bits/ 64 <666000000>;
-		opp-microvolt = <900000>;
-		status = "okay";
-	};
 	opp-856000000 {
 		opp-hz = /bits/ 64 <856000000>;
 		opp-microvolt = <900000>;
-		status = "okay";
+	};
+	opp-928000000 {
+		opp-hz = /bits/ 64 <928000000>;
+		opp-microvolt = <900000>;
+		status = "disabled";
 	};
 };
 
@@ -326,7 +329,7 @@
 		pinctrl-0 = <&pmic_int_l>;
 		pinctrl-1 = <&soc_slppin_slp>, <&rk809_slppin_slp>;
 		pinctrl-2 = <&soc_slppin_gpio>, <&rk809_slppin_pwrdn>;
-		pinctrl-3 = <&soc_slppin_gpio>,<&rk809_slppin_null>;
+		pinctrl-3 = <&soc_slppin_gpio>, <&rk809_slppin_null>;
 		rockchip,system-power-controller;
 		pmic-reset-func = <0>;
 		wakeup-source;
@@ -548,6 +551,8 @@
 			};
 
 			vcc5v0_usb: SWITCH_REG1 {
+				regulator-always-on;
+				regulator-boot-on;
 				regulator-name = "vcc5v0_usb";
 				regulator-state-mem {
 					regulator-on-in-suspend;
@@ -575,6 +580,7 @@
 			assigned-clock-parents = <&cru SCLK_I2S1_8CH>;
 			hp-volume = <20>;
 			spk-volume = <3>;
+			mic-in-differential;
 			status = "okay";
 		};
 	};
@@ -623,15 +629,17 @@
 };
 
 &i2c1 {
-	i2c-scl-falling-time-ns = <30>;
-	i2c-scl-rising-time-ns = <140>;
+	// i2c-scl-falling-time-ns = <30>;
+	// i2c-scl-rising-time-ns = <140>;
 	status = "okay";
 };
 
 &i2c4 {
 	status = "okay";
+	i2c-scl-rising-time-ns = <345>;
+	i2c-scl-falling-time-ns = <11>;
 
-	gt1x: gt1x@14 {
+	gt9xx: gt9xx@14 {
 		reg = <0x14>;
 		compatible = "goodix,gt9xx";
 		pinctrl-names = "default";
@@ -650,6 +658,7 @@
 	status = "okay";
 	i2c-scl-rising-time-ns = <345>;
 	i2c-scl-falling-time-ns = <11>;
+	clock-frequency = <100000>;
 
 	usbc0: fusb302@24 {
 		compatible = "fcs,fusb302";
@@ -661,15 +670,9 @@
 		vbus-supply = <&vbus_typec>;
 		status = "okay";
 
-		ports {
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			port@0 {
-				reg = <0>;
-				usbc0_role_sw: endpoint@0 {
-					remote-endpoint = <&dwc3_0_role_switch>;
-				};
+		port {
+			usbc0_role_sw: endpoint {
+				remote-endpoint = <&dwc3_0_role_switch>;
 			};
 		};
 
@@ -681,7 +684,8 @@
 			try-power-role = "sink";
 			op-sink-microwatt = <1000000>;
 			sink-pdos =
-				<PDO_FIXED(5000, 2500, PDO_FIXED_USB_COMM)>;
+				<PDO_FIXED(5000, 2500, PDO_FIXED_USB_COMM)
+				 PDO_FIXED(9000, 3000, PDO_FIXED_USB_COMM)>;
 			source-pdos =
 				<PDO_FIXED(5000, 1500, PDO_FIXED_USB_COMM)>;
 
@@ -751,10 +755,6 @@
 	status = "okay";
 };
 
-&pmu_pvtm {
-	status = "okay";
-};
-
 &pmu_io_domains {
 	status = "okay";
 	pmu1830-supply = <&vcc_1v8>;
@@ -805,7 +805,7 @@
 	bus-width = <4>;
 	disable-wp;
 	cap-sd-highspeed;
-	cap-sdio-irq;
+	// cap-sdio-irq;
 	keep-power-in-suspend;
 	mmc-pwrseq = <&sdio_pwrseq>;
 	non-removable;
@@ -816,14 +816,14 @@
 	#size-cells = <0>;
 	status = "okay";
 
-	// wf200: mmc@1 {
-	// 	compatible = "silabs,wf200";
-	// 	reg = <1>;
-	// 	pinctrl-names = "default";
-	// 	pinctrl-0 = <&bt_wake_pin>;
-	// 	wakeup-gpios = <&gpio2 RK_PD2 GPIO_ACTIVE_HIGH>;
-	// 	config-file = "wf200.pds";
-	// };
+	wf200: mmc@1 {
+		compatible = "silabs,wf200";
+		reg = <1>;
+		// pinctrl-names = "default";
+		// pinctrl-0 = <&bt_host_wake_pin>;
+		// wakeup-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_LOW>;
+		config-file = "wf200.pds";
+	};
 };
 
 &sdmmc {
@@ -859,7 +859,7 @@
 };
 
 &spdif {
-	status = "okay";
+	status = "disabled";
 	pinctrl-0 = <&spdif_bus>;
 	i2c-scl-rising-time-ns = <450>;
 	i2c-scl-falling-time-ns = <15>;
@@ -899,7 +899,6 @@
 
 &u2phy0 {
 	status = "okay";
-	extcon = <&usbc0>;
 
 	u2phy0_otg: otg-port {
 		status = "okay";
@@ -944,19 +943,24 @@
 	status = "okay";
 };
 
+&usbdrd3_1 {
+	status = "okay";
+};
+
 &usbdrd_dwc3_0 {
 	status = "okay";
+	dr_mode = "otg";
 	usb-role-switch;
 
 	port {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		dwc3_0_role_switch: endpoint@0 {
-			reg = <0>;
+		dwc3_0_role_switch: endpoint {
 			remote-endpoint = <&usbc0_role_sw>;
 		};
 	};
+};
+
+&usbdrd_dwc3_1 {
+	status = "okay";
 };
 
 &vopb {
