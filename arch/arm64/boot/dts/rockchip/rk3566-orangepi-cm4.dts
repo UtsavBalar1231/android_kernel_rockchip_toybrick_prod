@@ -16,7 +16,7 @@
 #include "rk3568-linux.dtsi"
 
 / {
-	model = "Rockchip RK3566 Orange Pi CM4 Board";
+	model = "Rockchip RK3566 Orange Pi CM4 Board (Utsav)";
 	compatible = "rockchip,rk3566-orangepi-cm4", "rockchip,rk3566";
 
 	chosen: chosen {
@@ -189,7 +189,7 @@
 
 	ext_cam_ov5647_clk: external-camera-ov5647-clock {
 		compatible = "fixed-clock";
-		clock-frequency = <25000000>;
+		clock-frequency = <24000000>;
 		clock-output-names = "ext_cam_ov5647_clk";
 		#clock-cells = <0>;
 	};
@@ -258,27 +258,27 @@
 		default-brightness-level = <200>;
 	};
 
-	edp-panel {
+	edp_panel: edp-panel {
 		compatible = "simple-panel";
-		backlight = <&backlight>;
 		prepare-delay-ms = <120>;
 		enable-delay-ms = <120>;
 		unprepare-delay-ms = <120>;
 		disable-delay-ms = <120>;
+		backlight = <&backlight>;
 
 		display-timings {
 			native-mode = <&edp_timing>;
 
 			edp_timing: timing0 {
-				clock-frequency = <125000000>;
+				clock-frequency = <140000000>;
 				hactive = <1920>;
 				vactive = <1080>;
-				hback-porch = <180>;
-				hfront-porch = <120>;
-				vback-porch = <10>;
-				vfront-porch = <10>;
-				hsync-len = <20>;
-				vsync-len = <10>;
+				hfront-porch = <40>;
+				hsync-len = <40>;
+				hback-porch = <80>;
+				vfront-porch = <16>;
+				vsync-len = <8>;
+				vback-porch = <16>;
 				hsync-active = <0>;
 				vsync-active = <0>;
 				de-active = <0>;
@@ -319,7 +319,7 @@
 };
 
 &hdmi {
-	status = "okay";
+	status = "disabled";
 	rockchip,phy-table =
 		<92812500  0x8009 0x0000 0x0270>,
 		<165000000 0x800b 0x0000 0x026d>,
@@ -330,7 +330,7 @@
 };
 
 &hdmi_in_vp0 {
-	status = "okay";
+	status = "disabled";
 };
 
 &hdmi_in_vp1 {
@@ -338,7 +338,12 @@
 };
 
 &hdmi_sound {
-	status = "okay";
+	status = "disabled";
+};
+
+&route_hdmi {
+	status = "disabled";
+	// connect = <&vp0_out_hdmi>;
 };
 
 &i2c0 {
@@ -827,11 +832,6 @@
 	status = "okay";
 };
 
-&route_hdmi {
-	status = "disabled";
-	connect = <&vp0_out_hdmi>;
-};
-
 &saradc {
 	status = "okay";
 	vref-supply = <&vcca_1v8>;
@@ -961,6 +961,9 @@
 	status = "okay";
 	assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>;
 	assigned-clock-parents = <&pmucru PLL_HPLL>, <&cru PLL_VPLL>;
+
+	// assigned-clocks = <&cru DCLK_VOP0>, <&cru DCLK_VOP1>, <&cru DCLK_VOP2>;
+	// assigned-clock-parents = <&pmucru PLL_HPLL>, <&cru PLL_VPLL>, <&cru PLL_GPLL>;
 };
 
 &vop_mmu {
@@ -1043,31 +1046,30 @@
 };
 
 &i2c1 {
-        status = "okay";
+	status = "okay";
 
-        ov5647: ov5647@36 {
-                status = "disabled";
-                compatible = "ovti,ov5647";
-                reg = <0x36>;
+	ov5647: ov5647@36 {
+		status = "okay";
+		compatible = "ovti,ov5647";
+		reg = <0x36>;
 		clocks = <&ext_cam_ov5647_clk>;
-                clock-names = "ext_cam_ov5647_clk";
-                pwdn-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>;
+		clock-names = "xvclk";
+		pwdn-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>;
 		rockchip,camera-module-index = <0>;
 		rockchip,camera-module-facing = "back";
 		rockchip,camera-module-name = "TongJu";
 		rockchip,camera-module-lens-name = "CHT842-MD";
-		//rockchip,camera-module-name = "THDS11073";
-		//rockchip,camera-module-lens-name = "Largan-40122a1";
-                port {
-                        ov5647_out: endpoint {
-                                remote-endpoint = <&dphy1_in>;
-                                data-lanes = <1 2>;
-                        };
-                };
-        };
+
+		port {
+			ov5647_out: endpoint {
+				remote-endpoint = <&dphy1_in>;
+				data-lanes = <1 2>;
+			};
+		};
+	};
 
 	raspits_panel: raspits-panel@45 {
-                status = "disabled";
+		status = "okay";
 		compatible = "raspberrypi,7inch-touchscreen-panel";
 		reg = <0x45>;
 
@@ -1079,33 +1081,27 @@
 	};
 
 	raspits_touch_ft5426: raspits-touch-ft5426@38 {
-                status = "disabled";
+		status = "okay";
 		compatible = "raspits_ft5426";
 		reg = <0x38>;
 	};
 };
 
-&csi2_dphy_hw {
-      status = "disabled";
-};
-
 &i2c3 {
-        status = "okay";
+	status = "okay";
 
 	ov5647_1: ov5647@36 {
-		status = "disabled";
+		status = "okay";
 		compatible = "ovti,ov5647";
 		reg = <0x36>;
 
 		clocks = <&ext_cam_ov5647_clk>;
-		clock-names = "ext_cam_ov5647_clk";
-                pwdn-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>;
+		clock-names = "xvclk";
+        pwdn-gpios = <&gpio2 RK_PC6 GPIO_ACTIVE_LOW>;
 		rockchip,camera-module-index = <1>;
 		rockchip,camera-module-facing = "front";
 		rockchip,camera-module-name = "TongJu";
 		rockchip,camera-module-lens-name = "CHT842-MD";
-		//rockchip,camera-module-name = "THDS11073";
-		//rockchip,camera-module-lens-name = "Largan-40122a1";
 
 		port {
 			ov5647_out1: endpoint {
@@ -1116,7 +1112,7 @@
 	};
 
 	raspits_panel_1: raspits-panel@45 {
-                status = "disabled";
+                status = "okay";
 		compatible = "raspberrypi,7inch-touchscreen-panel";
 		reg = <0x45>;
 
@@ -1128,197 +1124,220 @@
 	};
 
 	raspits_touch_ft5426_1: raspits-touch-ft5426@38 {
-                status = "disabled";
+		status = "okay";
 		compatible = "raspits_ft5426";
 		reg = <0x38>;
 	};
 };
 
+&csi2_dphy_hw {
+	status = "okay";
+};
+
 &csi2_dphy0 {
-         status = "disabled";
+	status = "disabled";
+	/delete-node/ ports;
 };
 
 &csi2_dphy1 {
-        status = "disabled";
-        /*
-        * dphy1 only used for split mode,
-        * can be used  concurrently  with dphy2
-        * full mode and split mode are mutually exclusive
-        */
-        ports {
-                #address-cells = <1>;
-                #size-cells = <0>;
+	status = "okay";
 
-                port@0 {
-                        reg = <0>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+	/*
+	 * dphy1 only used for split mode,
+	 * can be used  concurrently  with dphy2
+	 * full mode and split mode are mutually exclusive
+	 */
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-                        dphy1_in: endpoint@1 {
-                                        reg = <1>;
-                                        remote-endpoint = <&ov5647_out>;
-                                        data-lanes = <1 2>;
-                        };
-                };
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
 
-                port@1 {
-                        reg = <1>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+			dphy1_in: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&ov5647_out>;
+				data-lanes = <1 2>;
+			};
+		};
 
-                        dphy1_out: endpoint@1 {
-                                        reg = <1>;
-                                        remote-endpoint = <&mipi_csi2_input>;
-                        };
-                };
-        };
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			dphy1_out: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&isp0_in>;
+			};
+		};
+	};
 };
 
 &csi2_dphy2 {
-        status = "disabled";
-        /*
-        * dphy2 only used for split mode,
-        * can be used  concurrently  with dphy1
-        * full mode and split mode are mutually exclusive
-        */
-        ports {
-                #address-cells = <1>;
-                #size-cells = <0>;
+	status = "okay";
 
-                port@0 {
-                        reg = <0>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+	/*
+	 * dphy2 only used for split mode,
+	 * can be used  concurrently  with dphy1
+	 * full mode and split mode are mutually exclusive
+	 */
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-                        dphy2_in: endpoint@1 {
-                                        reg = <1>;
-                                        remote-endpoint = <&ov5647_out1>;
-                                        data-lanes = <1 2>;
-                        };
-                };
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
 
-                port@1 {
-                        reg = <1>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+			dphy2_in: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&ov5647_out1>;
+				data-lanes = <1 2>;
+			};
+		};
 
-                        dphy2_out: endpoint@1 {
-                                        reg = <1>;
-                                        remote-endpoint = <&isp1_in>;
-                        };
-                };
-        };
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			dphy2_out: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&mipi_csi2_input>;
+			};
+		};
+	};
+};
+
+&mipi_csi2_hw {
+	status = "okay";
 };
 
 &mipi_csi2 {
-        status = "disabled";
+	status = "okay";
 
-        ports {
-                #address-cells = <1>;
-                #size-cells = <0>;
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-                port@0 {
-                        reg = <0>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
 
-                        mipi_csi2_input: endpoint@1 {
-                                        reg = <1>;
-                                        remote-endpoint = <&dphy1_out>;
-                                        data-lanes = <1 2>;
-                        };
-                };
+			mipi_csi2_input: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&dphy2_out>;
+				data-lanes = <1 2>;
+			};
+		};
 
-                port@1 {
-                        reg = <1>;
-                        #address-cells = <1>;
-                        #size-cells = <0>;
+		port@1 {
+			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
 
-                        mipi_csi2_output: endpoint@0 {
-                                        reg = <0>;
-                                        remote-endpoint = <&cif_mipi_in>;
-                                        data-lanes = <1 2>;
-                        };
-                };
-        };
-};
-
-&rkcif_mipi_lvds {
-        status = "disabled";
-        port {
-                cif_mipi_in: endpoint {
-                        remote-endpoint = <&mipi_csi2_output>;
-                        data-lanes = <1 2>;
-                };
-        };
-};
-
-&rkcif_mipi_lvds_sditf {
-        status = "disabled";
-        port {
-                mipi_lvds_sditf: endpoint {
-                        remote-endpoint = <&isp0_in>;
-                        data-lanes = <1 2>;
-                };
-        };
-};
-
-&rkisp {
-        status = "disabled";
-};
-
-&rkisp_mmu {
-        status = "disabled";
-};
-
-&rkisp_vir0 {
-        status = "disabled";
-        port {
-                #address-cells = <1>;
-                #size-cells = <0>;
-
-                isp0_in: endpoint@0 {
-                        reg = <0>;
-                        remote-endpoint = <&mipi_lvds_sditf>;
-                };
-        };
-};
-
-&rkisp_vir1 {
-        status = "disabled";
-
-        port {
-                reg = <0>;
-                #address-cells = <1>;
-                #size-cells = <0>;
-
-                isp1_in: endpoint@0 {
-                        reg = <0>;
-                        remote-endpoint = <&dphy2_out>;
-                };
-        };
-};
-
-&rkcif_mmu {
-    status = "disabled";
+			mipi_csi2_output: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&cif_mipi_in>;
+				data-lanes = <1 2>;
+			};
+		};
+	};
 };
 
 &rkcif {
-    status = "disabled";
+	status = "okay";
+};
+
+&rkcif_mipi_lvds {
+	status = "okay";
+
+	port {
+		cif_mipi_in: endpoint {
+			remote-endpoint = <&mipi_csi2_output>;
+			data-lanes = <1 2>;
+		};
+	};
+};
+
+&rkcif_mipi_lvds_sditf {
+	status = "okay";
+
+	port {
+		mipi_lvds_sditf: endpoint {
+			remote-endpoint = <&isp1_in>;
+			data-lanes = <1 2>;
+		 };
+	};
+};
+
+&can2 {
+	status = "disabled";
+};
+
+&rkcif_mmu {
+	status = "okay";
+};
+
+&rkisp {
+	status = "okay";
+};
+
+&rkisp_mmu {
+	status = "okay";
+};
+
+&rkisp_vir0 {
+	status = "okay";
+	/* ov5647_1->dphy1->isp_vir0 */
+
+	port {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		isp0_in: endpoint@0 {
+			reg = <0>;
+			remote-endpoint = <&dphy1_out>;
+		};
+	};
+};
+
+&rkisp_vir1 {
+	status = "okay";
+	/* ov5647->dphy2->csi2->vicap */
+	/* vicap-sditf->isp_vir1 */
+	port {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		isp1_in: endpoint@0 {
+			reg = <0>;
+			remote-endpoint = <&mipi_lvds_sditf>;
+		};
+	};
 };
 
 &edp {
-	status = "disabled";
-	force-hpd;
+	status = "okay";
+	// force-hpd;
 	hpd-gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
+	// enable-delay-ms = <50>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&edp_hpd &bl_en>;
 
 	ports {
 		port@1 {
 			reg = <1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
 
-			edp_out_panel: endpoint {
+			edp_out_panel: endpoint@0 {
+				reg = <0>;
 				remote-endpoint = <&panel_in_edp>;
 			};
 		};
@@ -1326,15 +1345,28 @@
 };
 
 &edp_phy {
+	status = "okay";
+};
+
+&edp_in_vp0 {
+	status = "okay";
+};
+
+&vp0_out_edp {
+	status = "okay";
+};
+
+&edp_in_vp1 {
 	status = "disabled";
 };
 
 &route_edp {
-	status = "disabled";
+	status = "okay";
+	connect = <&vp0_out_edp>;
 };
 
 &pwm2 {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi0 {
@@ -1352,7 +1384,7 @@
 };
 
 &dsi1 {
-	status = "disabled";
+	status = "okay";
 
 	ports {
 		port@1 {
@@ -1363,4 +1395,25 @@
 			};
 		};
 	};
+};
+
+&video_phy1 {
+	status = "okay";
+};
+
+&dsi1_in_vp0 {
+	status = "disabled";
+};
+
+&dsi1_in_vp1 {
+	status = "disabled";
+};
+
+&vp1_out_dsi1 {
+	status = "okay";
+};
+
+&route_dsi1 {
+	status = "okay";
+	connect = <&vp1_out_dsi1>;
 };
