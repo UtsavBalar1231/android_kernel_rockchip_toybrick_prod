@@ -1151,19 +1151,6 @@ static inline u32 ov5647_cal_delay(u32 cycles)
 	return DIV_ROUND_UP(cycles, OV5647_XVCLK_FREQ / 1000 / 1000);
 }
 
-static const struct regval sensor_oe_disable_regs[] = {
-	{0x3000, 0x00},
-	{0x3001, 0x00},
-	{0x3002, 0x00},
-	{REG_NULL, 0x00},
-};
-
-static const struct regval sensor_oe_enable_regs[] = {
-	{0x3000, 0x0f},
-	{0x3001, 0xff},
-	{0x3002, 0xe4},
-	{REG_NULL, 0x00},
-};
 static int ov5647_stream_off(struct v4l2_subdev *sd)
 {
 	int ret;
