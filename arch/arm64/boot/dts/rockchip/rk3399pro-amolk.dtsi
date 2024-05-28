@@ -162,7 +162,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&gm500_power &gm500_reset>;
 		4G,power-gpio = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
-		4G,reset-gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_LOW>;
+		4G,reset-gpio = <&gpio3 RK_PD4 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 
@@ -554,6 +554,8 @@
 				regulator-always-on;
 				regulator-boot-on;
 				regulator-name = "vcc5v0_usb";
+				regulator-min-microvolt = <5000000>;
+				regulator-max-microvolt = <5000000>;
 				regulator-state-mem {
 					regulator-on-in-suspend;
 				};
@@ -635,7 +637,7 @@
 };
 
 &i2c4 {
-	status = "okay";
+	status = "disabled";
 	i2c-scl-rising-time-ns = <345>;
 	i2c-scl-falling-time-ns = <11>;
 
@@ -805,7 +807,6 @@
 	bus-width = <4>;
 	disable-wp;
 	cap-sd-highspeed;
-	// cap-sdio-irq;
 	keep-power-in-suspend;
 	mmc-pwrseq = <&sdio_pwrseq>;
 	non-removable;
@@ -899,6 +900,7 @@
 
 &u2phy0 {
 	status = "okay";
+	rockchip,u2phy-tuning;
 
 	u2phy0_otg: otg-port {
 		status = "okay";
@@ -912,6 +914,7 @@
 
 &u2phy1 {
 	status = "okay";
+	rockchip,u2phy-tuning;
 
 	u2phy1_otg: otg-port {
 		status = "okay";
@@ -927,7 +930,7 @@
 	status = "okay";
 };
 
-&uart3 {
+&uart1 {
 	status = "okay";
 };
 
@@ -1106,9 +1109,9 @@
 				<2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 
-		bt_host_wake_pin: bt-host-wake-pin {
-			rockchip,pins =
-				<0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
+		// bt_host_wake_pin: bt-host-wake-pin {
+		// 	rockchip,pins =
+		// 		<0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+		// };
 	};
 };
