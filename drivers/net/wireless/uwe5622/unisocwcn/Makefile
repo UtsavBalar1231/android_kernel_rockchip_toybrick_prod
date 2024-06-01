@@ -2,7 +2,7 @@ PWD := $(shell pwd)
 CURFOLDER ?= $(pwd)
 
 LD_CFLAGS += -D__linux__
-EXTRA_CFLAGS=-fno-pic
+EXTRA_CFLAGS=-fno-pic -Wno-int-conversion
 
 all_dependencies := driver
 driver_dependencies :=
