@@ -113,11 +113,22 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
+	lcd_pwr_ctl: lcd-pwr-ctl {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		regulator-always-on;
+		regulator-boot-on;
+		gpios = <&gpio3 RK_PD3 GPIO_ACTIVE_HIGH>;
+		regulator-name = "lcd_pwr_ctl";
+		vin-supply = <&vcc3v3_sys>;
+	};
+
 	rk809_sound: rk809-sound {
 		compatible = "rockchip,multicodecs-card";
 		rockchip,card-name = "rockchip-rk809";
 		rockchip,codec-hp-det;
 		rockchip,mclk-fs = <256>;
+		rockchip,format = "i2s";
 		rockchip,cpu = <&i2s1>;
 		rockchip,codec = <&rk809_codec>;
 		status = "okay";
