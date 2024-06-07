@@ -25,16 +25,16 @@
 };
 
 &hdmi_in_vopl {
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_in_vopb {
-	status = "okay";
+	status = "disabled";
 };
 
 &route_hdmi {
 	status = "okay";
-	connect = <&hdmi_in_vopb>;
+	connect = <&hdmi_in_vopl>;
 };
 
 &dsi {
@@ -42,27 +42,6 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 
-	/*
-    dsi0_panel: panel@0 {
-		reg = <0>;
-		status = "okay";
-		backlight = <&backlight>;
-		compatible = "vekatech,vklcd07", "fitipower,ek79007ad";
-		reset-gpios = <&gpio1 RK_PA1 GPIO_ACTIVE_LOW>;
-		switch-gpios = <&gpio4 RK_PD6 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&lcd_enable_gpio>, <&lcd_rst_gpio>;
-		lcd-model = "vklcd07";
-		dsi-lanes = <4>;
-		power-supply = <&vcc5v0_sys>;
-
-		port {
-			panel_in_dsi: endpoint {
-				remote-endpoint = <&dsi_out_panel>;
-			};
-		};
-	};
-	*/
     dsi0_panel: panel@0 {
 		status = "okay";
 		compatible = "simple-panel-dsi";
@@ -128,7 +107,7 @@
 			};
 		};
 
-		ports {
+		port {
 			panel_in_dsi: endpoint {
 				remote-endpoint = <&dsi_out_panel>;
 			};
@@ -150,16 +129,16 @@
 };
 
 &dsi_in_vopb {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi_in_vopl {
-	status = "okay";
+	status = "disabled";
 };
 
 &route_dsi {
 	status = "okay";
-	connect = <&dsi_in_vopl>;
+	connect = <&dsi_in_vopb>;
 };
 
 &route_edp {
