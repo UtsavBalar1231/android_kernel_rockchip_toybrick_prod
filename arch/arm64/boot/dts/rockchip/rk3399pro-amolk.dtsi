@@ -590,10 +590,11 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&i2s_8ch_mclk>;
 			assigned-clocks = <&cru SCLK_I2SOUT_SRC>;
+			assigned-clock-rates = <12288000>;
 			assigned-clock-parents = <&cru SCLK_I2S1_8CH>;
 			hp-volume = <20>;
 			spk-volume = <3>;
-			mic-in-differential;
+			// mic-in-differential;
 			status = "okay";
 		};
 	};
