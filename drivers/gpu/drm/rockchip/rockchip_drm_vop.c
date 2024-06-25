@@ -238,6 +238,8 @@ struct vop {
 	bool is_enabled;
 	bool support_multi_area;
 
+	bool force_x_mirror;
+
 	bool aclk_rate_reset;
 	unsigned long aclk_rate;
 
@@ -2174,8 +2176,12 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
 
 	VOP_WIN_SET(vop, win, ymirror,
 		    (new_state->rotation & DRM_MODE_REFLECT_Y) ? 1 : 0);
-	VOP_WIN_SET(vop, win, xmirror,
-		    (new_state->rotation & DRM_MODE_REFLECT_X) ? 1 : 0);
+
+	if (vop->force_x_mirror)
+		VOP_WIN_SET(vop, win, xmirror, 1);
+	else
+		VOP_WIN_SET(vop, win, xmirror,
+				(new_state->rotation & DRM_MODE_REFLECT_X) ? 1 : 0);
 
 	if (is_yuv) {
 		VOP_WIN_SET(vop, win, uv_vir, DIV_ROUND_UP(fb->pitches[1], 4));
@@ -5290,6 +5296,8 @@ static int vop_bind(struct device *dev, struct device *master, void *data)
 	vop->id = vop_data->vop_id;
 	dev_set_drvdata(dev, vop);
 	vop->support_multi_area = of_property_read_bool(dev->of_node, "support-multi-area");
+	vop->force_x_mirror = of_property_read_bool(dev->of_node, "force-x-mirror");
+	dev_info(vop->dev, "force x mirror: %s\n", vop->force_x_mirror ? "enable" : "disable");
 
 	ret = vop_win_init(vop);
 	if (ret)
