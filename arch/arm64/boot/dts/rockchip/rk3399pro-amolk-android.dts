@@ -7,21 +7,21 @@
 	model = "Rockchip RK3399Pro Android board";
 
 	chosen {
-		bootargs = "earlycon=uart8250,mmio32,0xff1a0000 earlyprintk loglevel=7 swiotlb=1 console=ttyFIQ0 androidboot.baseband=N/A androidboot.veritymode=enforcing androidboot.hardware=rk30board androidboot.console=ttyFIQ0 init=/init initrd=0x62000000,0x00800000 coherent_pool=1m";
+		bootargs = "earlycon=uart8250,mmio32,0xff1a0000 earlyprintk loglevel=7 swiotlb=1 console=ttyFIQ0 androidboot.baseband=N/A androidboot.veritymode=enforcing androidboot.hardware=rk30board androidboot.console=ttyFIQ0 init=/init initrd=0x62000000,0x00800000 coherent_pool=1m video=DSI-1:1024x600,reflect_x";
 	};
 };
 
 &hdmi_in_vopb {
-	status = "okay";
+	status = "disabled";
 };
 
 &hdmi_in_vopl {
-	status = "disabled";
+	status = "okay";
 };
 
 &route_hdmi {
 	status = "okay";
-	connect = <&hdmi_in_vopb>;
+	connect = <&hdmi_in_vopl>;
 };
 
 &dsi {
@@ -115,16 +115,16 @@
 };
 
 &dsi_in_vopb {
-	status = "disabled";
+	status = "okay";
 };
 
 &dsi_in_vopl {
-	status = "okay";
+	status = "disabled";
 };
 
 &route_dsi {
 	status = "okay";
-	connect = <&dsi_in_vopl>;
+	connect = <&dsi_in_vopb>;
 };
 
 &route_edp {
