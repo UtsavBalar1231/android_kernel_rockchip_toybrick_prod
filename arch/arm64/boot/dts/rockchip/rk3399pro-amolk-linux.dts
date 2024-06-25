@@ -7,6 +7,10 @@
 				 "rockchip,rk3399pro-amolk-linux",
 				 "rockchip,rk3399pro";
 	model = "Rockchip RK3399Pro Board (Linux)";
+
+	chosen {
+		bootargs = "earlycon=uart8250,mmio32,0xff1a0000 console=ttyFIQ0 rw root=PARTUUID=614e0000-0000 rootfstype=ext4 rootwait coherent_pool=1m video=DSI-1:1024x600,reflect_x";
+	};
 };
 
 &hdmi {
