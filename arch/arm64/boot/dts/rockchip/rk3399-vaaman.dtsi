@@ -95,26 +95,6 @@
 		status = "okay";
 	};
 
-	vbus_typec: vbus-typec-regulator {
-		compatible = "regulator-fixed";
-		regulator-name = "vbus_typec";
-		enable-active-high;
-		gpio = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&vcc5v0_typec0_en>;
-		vin-supply = <&vcc5v0_sys>;
-	};
-
-	vcc_0v9: vcc-0v9-regulator {
-		compatible = "regulator-fixed";
-		regulator-name = "vcc_0v9";
-		regulator-always-on;
-		regulator-boot-on;
-		regulator-min-microvolt = <900000>;
-		regulator-max-microvolt = <900000>;
-		vin-supply = <&vcc3v3_sys>;
-	};
-
 	vcc12v_dcin: vcc12v-dcin-regulator {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc12v_dcin";
@@ -144,6 +124,27 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		vin-supply = <&vcc12v_dcin>;
+	};
+
+
+	vbus_typec: vbus-typec-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vbus_typec";
+		enable-active-high;
+		gpio = <&gpio1 RK_PA3 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&vcc5v0_typec0_en>;
+		vin-supply = <&vcc5v0_sys>;
+	};
+
+	vcc_0v9: vcc-0v9-regulator {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_0v9";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <900000>;
+		regulator-max-microvolt = <900000>;
+		vin-supply = <&vcc3v3_sys>;
 	};
 
 	vcc3v3_lan: vcc3v3-lan-regulator {
